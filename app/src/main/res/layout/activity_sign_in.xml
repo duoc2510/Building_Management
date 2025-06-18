@@ -9,86 +9,185 @@
     android:fitsSystemWindows="true"
     tools:context=".SignInActivity">
 
-    <ImageView
-        android:id="@+id/ivSinInLogo"
-        android:layout_width="350dp"
-        android:layout_height="280dp"
-        android:src="@drawable/sin_in_logo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="30dp"
-        android:contentDescription="image" />
-    <TextView
-        android:id="@+id/tvLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="45dp"
-        android:text="Đăng nhập"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        android:layout_marginStart="20dp"
-        android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/ivSinInLogo"
-        app:layout_constraintStart_toStartOf="parent"
-        />
-    <TextView
-        android:id="@+id/textViewMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:text="Vui lòng nhập số điện thoại."
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvLogin" />
+        app:layout_constraintBottom_toBottomOf="parent">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilPhone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/start_end_margin"
-        android:layout_marginEnd="@dimen/start_end_margin"
-        android:layout_marginTop="10dp"
-        app:boxStrokeWidth="2dp"
-        app:boxCornerRadiusBottomEnd="@dimen/til_radius"
-        app:boxCornerRadiusBottomStart="@dimen/til_radius"
-        app:boxCornerRadiusTopEnd="@dimen/til_radius"
-        app:boxCornerRadiusTopStart="@dimen/til_radius"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewMessage"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        >
-        <EditText
-            android:id="@+id/textSignInPhone"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
-            android:digits="0123456789"
-            android:maxLength="10"
-            android:hint="Số điện thoại"
-            android:textSize="@dimen/et_text_size"
-            />
+            android:paddingBottom="20dp">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <ImageView
+                android:id="@+id/ivSinInLogo"
+                android:layout_width="350dp"
+                android:layout_height="250dp"
+                android:src="@drawable/sign_in_logo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="30dp"
+                android:contentDescription="image" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnSendOtp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/button_bg"
-        android:text="Gửi mã Otp"
-        android:textColor="@color/white"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilPhone" />
+            <TextView
+                android:id="@+id/tvLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="Đăng nhập"
+                android:textSize="36sp"
+                android:textStyle="bold"
+                android:layout_marginStart="20dp"
+                android:textColor="@color/black"
+                app:layout_constraintTop_toBottomOf="@id/ivSinInLogo"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/textViewMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="10dp"
+                android:text="Vui lòng nhập thông tin đăng nhập."
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvLogin" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/start_end_margin"
+                android:layout_marginEnd="@dimen/start_end_margin"
+                android:layout_marginTop="20dp"
+                app:boxStrokeWidth="2dp"
+                app:boxCornerRadiusBottomEnd="@dimen/til_radius"
+                app:boxCornerRadiusBottomStart="@dimen/til_radius"
+                app:boxCornerRadiusTopEnd="@dimen/til_radius"
+                app:boxCornerRadiusTopStart="@dimen/til_radius"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewMessage"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@android:color/holo_blue_dark">
+
+                <EditText
+                    android:id="@+id/textSignInEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:hint="Email"
+                    android:textSize="@dimen/et_text_size"
+                    android:textColorHint="@android:color/darker_gray" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/start_end_margin"
+                android:layout_marginEnd="@dimen/start_end_margin"
+                android:layout_marginTop="15dp"
+                app:boxStrokeWidth="2dp"
+                app:boxCornerRadiusBottomEnd="@dimen/til_radius"
+                app:boxCornerRadiusBottomStart="@dimen/til_radius"
+                app:boxCornerRadiusTopEnd="@dimen/til_radius"
+                app:boxCornerRadiusTopStart="@dimen/til_radius"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tilEmail"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@android:color/holo_blue_dark">
+
+                <EditText
+                    android:id="@+id/textSignInPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"
+                    android:digits="0123456789"
+                    android:maxLength="10"
+                    android:hint="Số điện thoại"
+                    android:textSize="@dimen/et_text_size"
+                    android:textColorHint="@android:color/darker_gray" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnSendOtp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/button_bg"
+                android:text="Gửi mã OTP"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tilPhone" />
+
+            <TextView
+                android:id="@+id/tvOrDivider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="hoặc"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnSendOtp" />
+
+            <View
+                android:id="@+id/leftDivider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginEnd="10dp"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintBottom_toBottomOf="@+id/tvOrDivider"
+                app:layout_constraintEnd_toStartOf="@+id/tvOrDivider"
+                app:layout_constraintStart_toStartOf="@+id/btnSendOtp"
+                app:layout_constraintTop_toTopOf="@+id/tvOrDivider" />
+
+            <View
+                android:id="@+id/rightDivider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="10dp"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintBottom_toBottomOf="@+id/tvOrDivider"
+                app:layout_constraintEnd_toEndOf="@+id/btnSendOtp"
+                app:layout_constraintStart_toEndOf="@+id/tvOrDivider"
+                app:layout_constraintTop_toTopOf="@+id/tvOrDivider" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnSignInWithPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@android:color/transparent"
+                style="?android:attr/borderlessButtonStyle"
+                android:text="Đăng nhập bằng mật khẩu"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvOrDivider" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

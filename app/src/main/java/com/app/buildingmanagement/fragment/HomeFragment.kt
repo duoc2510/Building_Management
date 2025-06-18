@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.buildingmanagement.databinding.FragmentHomeBinding
 import com.app.buildingmanagement.firebase.FCMHelper
+import com.app.buildingmanagement.data.SharedDataManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.text.SimpleDateFormat
@@ -70,6 +71,12 @@ class HomeFragment : Fragment() {
                         if (phoneInRoom == phone) {
                             // Lấy số phòng từ key của room
                             roomNumber = roomSnapshot.key
+
+                            // Lưu vào cache NGAY KHI TÌM THẤY
+                            if (roomNumber != null) {
+                                SharedDataManager.setCachedData(roomSnapshot, roomNumber, phone)
+                                Log.d(TAG, "Cached data updated for room: $roomNumber")
+                            }
 
                             // Gửi FCM token lên Firebase khi đã biết số phòng (chỉ gửi 1 lần)
                             if (!fcmTokenSent && roomNumber != null) {
@@ -266,6 +273,7 @@ class HomeFragment : Fragment() {
         valueEventListener?.let {
             roomsRef?.removeEventListener(it)
         }
+        // Không clear cache ở đây để các Fragment khác có thể sử dụng
         _binding = null
     }
 

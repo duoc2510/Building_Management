@@ -19,7 +19,6 @@
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:paddingBottom="72dp"
         />
 
     <!-- Đây là phần bottom cố định -->
