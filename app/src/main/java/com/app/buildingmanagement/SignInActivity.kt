@@ -23,8 +23,12 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import java.util.concurrent.TimeUnit
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 
 class SignInActivity : BaseActivity() {
     private var binding: ActivitySignInBinding? = null
@@ -167,12 +171,39 @@ class SignInActivity : BaseActivity() {
     }
 
     private fun checkAuthenticationState() {
-        if (auth.currentUser != null) {
+        val user = auth.currentUser
+        if (user != null) {
             Log.d(TAG, "User already logged in")
-            goToMain()
-            return
+
+            val uid = user.uid
+            val userRef = FirebaseDatabase.getInstance().getReference("user").child(uid)
+
+            userRef.child("role").addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val role = snapshot.getValue(String::class.java)
+                    if (role != null) {
+                        Log.d(TAG, "User role: $role")
+                        when (role) {
+                            "admin" -> goToAdmin()
+                            "user" -> goToMain()
+                            else -> {
+                                Log.w(TAG, "Unknown role: $role")
+                                // Redirect to a default page or show an error
+                            }
+                        }
+                    } else {
+                        Log.w(TAG, "Role not found for user")
+                        // Handle missing role
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e(TAG, "Database error: ${error.message}")
+                }
+            })
         }
     }
+
 
     private fun sendVerificationCode() {
         resetVerificationState()
