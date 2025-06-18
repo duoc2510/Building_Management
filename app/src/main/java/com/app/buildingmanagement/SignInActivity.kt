@@ -29,6 +29,7 @@ import com.google.firebase.ktx.Firebase
 import java.util.concurrent.TimeUnit
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import kotlin.or
 
 class SignInActivity : BaseActivity() {
     private var binding: ActivitySignInBinding? = null
@@ -472,7 +473,14 @@ class SignInActivity : BaseActivity() {
         startActivity(intent)
         finish()
     }
+    private fun goToAdmin() {
+        if (isFinishing) return
 
+        val intent = Intent(this, AdminActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
+    }
     override fun onStart() {
         super.onStart()
         checkAuthenticationState()
