@@ -22,7 +22,10 @@
         android:name="com.app.buildingmanagement.fragment.PayFragment"
         android:label="@string/nav_payment"
         tools:layout="@layout/fragment_pay" />
-
+    <fragment
+        android:id="@+id/nav_shop"
+        android:name="com.app.buildingmanagement.fragment.ShopFragment"
+        android:label="Shop" />
     <fragment
         android:id="@+id/nav_settings"
         android:name="com.app.buildingmanagement.fragment.SettingsFragment"
