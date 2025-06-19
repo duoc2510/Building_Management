@@ -11,9 +11,14 @@ import com.app.buildingmanagement.ProductDetailActivity
 import com.app.buildingmanagement.R
 import com.app.buildingmanagement.model.Product
 import com.bumptech.glide.Glide
+import com.google.android.material.button.MaterialButton
 
-class ProductAdapter(private val products: List<Product>) :
-    RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+class ProductAdapter(
+    private val products: List<Product>
+) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+
+    var onUpdateClick: ((Product) -> Unit)? = null
+    var onDeleteClick: ((Product) -> Unit)? = null
 
     class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name: TextView = itemView.findViewById(R.id.productName)
@@ -48,6 +53,14 @@ class ProductAdapter(private val products: List<Product>) :
             val intent = Intent(context, ProductDetailActivity::class.java)
             intent.putExtra("product", product)
             context.startActivity(intent)
+        }
+
+        holder.btnUpdate.setOnClickListener {
+            onUpdateClick?.invoke(product)
+        }
+
+        holder.btnDelete.setOnClickListener {
+            onDeleteClick?.invoke(product)
         }
     }
 

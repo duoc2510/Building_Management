@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.app.buildingmanagement.databinding.ActivityAdminBinding
 import com.app.buildingmanagement.fragment.AdminHomeFragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.app.buildingmanagement.fragment.AdminShopFragment
 import com.google.firebase.auth.FirebaseAuth
 
 class AdminActivity : AppCompatActivity() {
@@ -20,21 +20,22 @@ class AdminActivity : AppCompatActivity() {
 
         // Load default fragment
         loadFragment(AdminHomeFragment())
-        binding.btnLogout.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
-            Toast.makeText(this, "Đã đăng xuất", Toast.LENGTH_SHORT).show()
 
-            val intent = Intent(this, SignInActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            finish()
-        }
-        // Set listener
+        // Handle BottomNavigation
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.nav_home -> loadFragment(AdminHomeFragment())
-//                R.id.nav_users -> loadFragment(AdminUserFragment())
-//                R.id.nav_settings -> loadFragment(AdminSettingsFragment())
+                R.id.nav_shop -> loadFragment(AdminShopFragment())
+                // R.id.nav_users -> loadFragment(AdminUserFragment())
+                // R.id.nav_settings -> loadFragment(AdminSettingsFragment())
+                R.id.nav_logout -> {
+                    FirebaseAuth.getInstance().signOut()
+                    Toast.makeText(this, "Đã đăng xuất", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, SignInActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
+                }
             }
             true
         }

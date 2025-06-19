@@ -180,7 +180,7 @@ class SignInActivity : BaseActivity() {
             Log.d(TAG, "User already logged in")
 
             val uid = currentUser.uid
-            val userRef = FirebaseDatabase.getInstance().getReference("user").child(uid)
+            val userRef = FirebaseDatabase.getInstance().getReference(uid)
 
             userRef.child("role").get().addOnSuccessListener { snapshot ->
                 val role = snapshot.getValue(String::class.java)
