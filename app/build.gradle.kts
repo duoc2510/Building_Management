@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
+    id("org.jetbrains.kotlin.kapt")
 }
 
 val localProps = Properties()
@@ -80,7 +81,11 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.firebase.appcheck.debug)
     implementation(libs.firebase.messaging)
+    implementation(libs.play.services.analytics.impl)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    implementation ("com.google.firebase:firebase-firestore-ktx:24.10.3")
+    implementation ("androidx.recyclerview:recyclerview:1.3.2")
 }
