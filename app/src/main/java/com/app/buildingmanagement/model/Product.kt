@@ -1,11 +1,15 @@
 package com.app.buildingmanagement.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Product(
     val name: String = "",
     val description: String = "",
     val type: String = "",
-    val price: Double = 0.0,
+    val price: Int = 0,
     val quantity: Int = 0,
-    val imageUrl: String = "", // Path to image in Firebase Storage
-    val status: String = ""    // e.g. "available", "out_of_stock"
-)
+    val status: String = "",
+    val imageUrl: String = ""
+) : Parcelable
