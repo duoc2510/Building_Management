@@ -10,8 +10,11 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.app.buildingmanagement.databinding.ActivitySignInBinding
@@ -29,11 +32,12 @@ import com.google.firebase.ktx.Firebase
 import java.util.concurrent.TimeUnit
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import kotlin.or
 
 class SignInActivity : BaseActivity() {
     private var binding: ActivitySignInBinding? = null
     private lateinit var auth: FirebaseAuth
+    val currentUser = FirebaseAuth.getInstance().currentUser
+
     private var verificationId: String? = null
     private var codeSent = false
     private var isAutoVerified = false
@@ -172,36 +176,31 @@ class SignInActivity : BaseActivity() {
     }
 
     private fun checkAuthenticationState() {
-        val user = auth.currentUser
-        if (user != null) {
+        if (currentUser != null) {
             Log.d(TAG, "User already logged in")
 
-            val uid = user.uid
+            val uid = currentUser.uid
             val userRef = FirebaseDatabase.getInstance().getReference("user").child(uid)
 
-            userRef.child("role").addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val role = snapshot.getValue(String::class.java)
-                    if (role != null) {
-                        Log.d(TAG, "User role: $role")
-                        when (role) {
-                            "admin" -> goToAdmin()
-                            "user" -> goToMain()
-                            else -> {
-                                Log.w(TAG, "Unknown role: $role")
-                                // Redirect to a default page or show an error
-                            }
+            userRef.child("role").get().addOnSuccessListener { snapshot ->
+                val role = snapshot.getValue(String::class.java)
+                if (role != null) {
+                    Log.d(TAG, "User role: $role")
+                    when (role) {
+                        "admin" -> goToAdmin()
+                        "user" -> goToMain()
+                        else -> {
+                            Log.w(TAG, "Unknown role: $role")
+                            // Redirect to a default page or show an error
                         }
-                    } else {
-                        Log.w(TAG, "Role not found for user")
-                        // Handle missing role
                     }
+                } else {
+                    Log.w(TAG, "Role not found for user")
+                    // Handle missing role
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e(TAG, "Database error: ${error.message}")
-                }
-            })
+            }.addOnFailureListener {
+                // Nếu xảy ra lỗi khi đọc dữ liệu
+            }
         }
     }
 
@@ -464,15 +463,6 @@ class SignInActivity : BaseActivity() {
                 }
             }
     }
-
-    private fun goToMain() {
-        if (isFinishing) return
-
-        val intent = Intent(this, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
-        finish()
-    }
     private fun goToAdmin() {
         if (isFinishing) return
 
@@ -481,6 +471,15 @@ class SignInActivity : BaseActivity() {
         startActivity(intent)
         finish()
     }
+    private fun goToMain() {
+        if (isFinishing) return
+
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
+    }
+
     override fun onStart() {
         super.onStart()
         checkAuthenticationState()

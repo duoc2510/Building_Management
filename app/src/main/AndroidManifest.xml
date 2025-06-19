@@ -65,6 +65,8 @@
                     android:scheme="myapp" />
             </intent-filter>
         </activity>
+        <activity android:name=".AdminActivity" />
+
         <activity
             android:name=".OtpActivity"
             android:exported="false" />
