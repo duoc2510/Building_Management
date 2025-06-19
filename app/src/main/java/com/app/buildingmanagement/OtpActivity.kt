@@ -15,6 +15,10 @@ import com.app.buildingmanagement.databinding.ActivityOtpBinding
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.util.concurrent.TimeUnit
 
 class OtpActivity : BaseActivity() {
@@ -119,13 +123,44 @@ class OtpActivity : BaseActivity() {
                 hideProgressBar()
                 isAuthenticationInProgress = false
 
-                if (task.isSuccessful) {
-                    Log.d("OTP", "Sign in successful")
-                    handleSuccessfulAuthentication()
+                if (task.isSuccessful || auth.currentUser != null) {
+                    Log.d("OTP", "Sign in successful or current user exists")
+                    val currentUser = auth.currentUser
+                    if (currentUser != null) {
+                        val uid = currentUser.uid
+                        val userRef = FirebaseDatabase.getInstance().getReference("user").child(uid)
+
+                        userRef.child("role").addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                val role = snapshot.getValue(String::class.java)
+                                Log.d("OTP", "Fetched role: $role")
+
+                                when (role) {
+                                    "admin" -> goToAdminScreen()
+                                    "user" -> goToUserScreen()
+                                    else -> {
+                                        Toast.makeText(
+                                            this@OtpActivity,
+                                            "Vai trò không xác định hoặc chưa có. Vui lòng liên hệ hỗ trợ.",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                Log.e("OTP", "Lỗi khi lấy role: ${error.message}")
+                                Toast.makeText(
+                                    this@OtpActivity,
+                                    "Lỗi khi lấy thông tin người dùng. Vui lòng thử lại.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        })
+                    }
                 } else {
                     Log.e("OTP", "Sign in failed", task.exception)
 
-                    // Kiểm tra xem user có được authenticate không bất chấp lỗi
                     val currentUser = auth.currentUser
                     if (currentUser != null) {
                         Log.d("OTP", "User is authenticated despite task failure")
@@ -147,7 +182,6 @@ class OtpActivity : BaseActivity() {
             }
             .addOnSuccessListener {
                 Log.d("OTP", "Authentication success listener triggered")
-                // Đảm bảo navigate ngay cả khi success listener được gọi
                 Handler(Looper.getMainLooper()).postDelayed({
                     if (auth.currentUser != null && !isFinishing) {
                         handleSuccessfulAuthentication()
@@ -298,4 +332,15 @@ class OtpActivity : BaseActivity() {
         countDownTimer?.cancel()
         binding = null
     }
+    private fun goToAdminScreen() {
+        startActivity(Intent(this, AdminActivity::class.java))
+        finish()
+    }
+
+
+    private fun goToUserScreen() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
+    }
+
 }

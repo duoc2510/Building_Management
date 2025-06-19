@@ -444,13 +444,46 @@ class SignInActivity : BaseActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful || auth.currentUser != null) {
                     Log.d(TAG, "Sign in successful")
-                    val message = if (isAutoLogin) {
-                        "Đăng nhập tự động thành công"
+
+                    val uid = auth.currentUser?.uid
+                    if (uid != null) {
+                        val userRef = FirebaseDatabase.getInstance().getReference("user").child(uid)
+                        userRef.child("role").addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                val role = snapshot.getValue(String::class.java)
+
+                                if (!role.isNullOrEmpty()) {
+                                    Log.d(TAG, "User role: $role")
+                                    val message = if (isAutoLogin) {
+                                        "Đăng nhập tự động thành công với vai trò $role"
+                                    } else {
+                                        "Xác thực thành công với vai trò $role"
+                                    }
+                                    showToast(this@SignInActivity, message)
+
+                                    when (role) {
+                                        "admin" -> goToAdmin()
+                                        "user" -> goToMain()
+                                        else -> {
+                                            showToast(this@SignInActivity, "Vai trò không xác định")
+                                            goToMain()
+                                        }
+                                    }
+                                } else {
+                                    showToast(this@SignInActivity, "Không tìm thấy vai trò người dùng")
+                                    goToMain()
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                Log.e(TAG, "Failed to read user role: ${error.message}")
+                                showToast(this@SignInActivity, "Lỗi khi kiểm tra vai trò")
+                                goToMain()
+                            }
+                        })
                     } else {
-                        "Xác thực thành công"
+                        showToast(this@SignInActivity, "Không tìm thấy UID người dùng")
                     }
-                    showToast(this, message)
-                    goToMain()
                 } else {
                     Log.e(TAG, "Sign in failed: ${task.exception?.message}")
                     resetVerificationState()
