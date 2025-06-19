@@ -19,7 +19,7 @@ class ProductAdapter(private val products: List<Product>) :
         val type: TextView = itemView.findViewById(R.id.productType)
         val price: TextView = itemView.findViewById(R.id.productPrice)
         val quantity: TextView = itemView.findViewById(R.id.productQuantity)
-        val status: TextView = itemView.findViewById(R.id.productStatus)
+        val status: TextView = itemView.findViewById(R.id.statusChip)
         val image: ImageView = itemView.findViewById(R.id.productImage)
     }
 
