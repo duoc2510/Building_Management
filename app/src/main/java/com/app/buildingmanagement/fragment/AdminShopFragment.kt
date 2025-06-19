@@ -101,11 +101,11 @@ class AdminShopFragment : Fragment() {
 
             db.child(product.id).setValue(updatedProduct)
                 .addOnSuccessListener {
-                    Toast.makeText(context, "Cập nhật thành công", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Cập nhật sản phẩm thành công", Toast.LENGTH_SHORT).show()
                     loadProducts()
                 }
                 .addOnFailureListener {
-                    Toast.makeText(context, "Cập nhật thất bại", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Cập nhật sản phẩm thất bại", Toast.LENGTH_SHORT).show()
                 }
         }
 
@@ -120,27 +120,30 @@ class AdminShopFragment : Fragment() {
 
     private fun deleteProduct(product: Product) {
         val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Xóa sản phẩm")
-        builder.setMessage("Bạn có chắc muốn xóa sản phẩm này không?")
+        builder.setTitle("Thay đổi trạng thái sản phẩm")
+        builder.setMessage("Bạn có chắc chắn muốn chuyển sản phẩm này sang trạng thái 'Hết hàng' không?")
 
-        builder.setPositiveButton("Xóa") { _, _ ->
-            db.child(product.id).removeValue()
+        builder.setPositiveButton("Đồng ý") { _, _ ->
+            val updatedProduct = product.copy(status = "Hết hàng")
+            db.child(product.id).setValue(updatedProduct)
                 .addOnSuccessListener {
-                    Toast.makeText(context, "Xóa thành công", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Đã chuyển trạng thái sang 'Hết hàng'", Toast.LENGTH_SHORT).show()
                     loadProducts()
                 }
                 .addOnFailureListener {
-                    Toast.makeText(context, "Xóa thất bại", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Cập nhật trạng thái thất bại", Toast.LENGTH_SHORT).show()
                 }
         }
 
         builder.setNegativeButton("Hủy", null)
 
         val dialog = builder.show()
+
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            .setTextColor(resources.getColor(R.color.red, null))
+            .setTextColor(resources.getColor(R.color.green_gradient_start, null))
+
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-            .setTextColor(resources.getColor(R.color.blue, null))
+            .setTextColor(resources.getColor(R.color.gray, null))
     }
 
     override fun onDestroyView() {
