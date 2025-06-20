@@ -11,11 +11,10 @@ import com.app.buildingmanagement.ProductDetailActivity
 import com.app.buildingmanagement.R
 import com.app.buildingmanagement.model.Product
 import com.bumptech.glide.Glide
-import com.google.android.material.button.MaterialButton
 
-class ProductAdapter(
+class ProductAdapterAdmin(
     private val products: List<Product>
-) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+) : RecyclerView.Adapter<ProductAdapterAdmin.ProductViewHolder>() {
 
     var onUpdateClick: ((Product) -> Unit)? = null
     var onDeleteClick: ((Product) -> Unit)? = null
@@ -28,13 +27,13 @@ class ProductAdapter(
         val quantity: TextView = itemView.findViewById(R.id.productQuantity)
         val status: TextView = itemView.findViewById(R.id.statusChip)
         val image: ImageView = itemView.findViewById(R.id.productImage)
-
-
+        val btnUpdate: View = itemView.findViewById(R.id.btnUpdate)
+        val btnDelete: View = itemView.findViewById(R.id.btnDelete)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_product, parent, false)
+            .inflate(R.layout.item_product_admin, parent, false)
         return ProductViewHolder(view)
     }
 
@@ -46,6 +45,7 @@ class ProductAdapter(
         holder.price.text = "${product.price} VND"
         holder.quantity.text = "Quantity: ${product.quantity}"
         holder.status.text = product.status
+
         Glide.with(holder.itemView.context)
             .load(product.imageUrl)
             .placeholder(R.drawable.ic_launcher_background)
@@ -56,8 +56,12 @@ class ProductAdapter(
             intent.putExtra("product", product)
             context.startActivity(intent)
         }
-
-
+        holder.btnUpdate.setOnClickListener {
+            onUpdateClick?.invoke(product)
+        }
+        holder.btnDelete.setOnClickListener {
+            onDeleteClick?.invoke(product)
+        }
     }
 
     override fun getItemCount() = products.size

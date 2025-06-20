@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.buildingmanagement.R
 import com.app.buildingmanagement.adapter.ProductAdapter
+import com.app.buildingmanagement.adapter.ProductAdapterAdmin
 import com.app.buildingmanagement.databinding.FragmentAdminShopBinding
 import com.app.buildingmanagement.model.Product
 import com.google.firebase.database.*
@@ -19,7 +20,7 @@ class AdminShopFragment : Fragment() {
 
     private val db = FirebaseDatabase.getInstance().getReference("product")
     private val products = mutableListOf<Product>()
-    private lateinit var adapter: ProductAdapter
+    private lateinit var adapter: ProductAdapterAdmin
 
     private var _binding: FragmentAdminShopBinding? = null
     private val binding get() = _binding!!
@@ -37,7 +38,7 @@ class AdminShopFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = ProductAdapter(products).apply {
+        adapter = ProductAdapterAdmin(products).apply {
             onUpdateClick = { product -> showUpdateDialog(product) }
             onDeleteClick = { product -> deleteProduct(product) }
         }
@@ -93,8 +94,7 @@ class AdminShopFragment : Fragment() {
                 name = nameInput.text.toString().trim(),
                 description = descriptionInput.text.toString().trim(),
                 type = typeInput.text.toString().trim(),
-                price = priceInput.text.toString().toDoubleOrNull() ?: 0.0,
-                quantity = quantityInput.text.toString().toIntOrNull() ?: 0,
+                price = priceInput.text.toString().toDoubleOrNull()?.toInt() ?: 0,                quantity = quantityInput.text.toString().toIntOrNull() ?: 0,
                 status = statusInput.text.toString().trim(),
                 imageUrl = imageUrlInput.text.toString().trim()
             )
