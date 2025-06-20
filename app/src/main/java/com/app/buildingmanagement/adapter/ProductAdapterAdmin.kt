@@ -50,12 +50,12 @@ class ProductAdapterAdmin(
             .load(product.imageUrl)
             .placeholder(R.drawable.ic_launcher_background)
             .into(holder.image)
-        holder.itemView.setOnClickListener {
-            val context = holder.itemView.context
-            val intent = Intent(context, ProductDetailActivity::class.java)
-            intent.putExtra("product", product)
-            context.startActivity(intent)
-        }
+//        holder.itemView.setOnClickListener {
+//            val context = holder.itemView.context
+//            val intent = Intent(context, ProductDetailActivity::class.java)
+//            intent.putExtra("product", product)
+//            context.startActivity(intent)
+//        }
         holder.btnUpdate.setOnClickListener {
             onUpdateClick?.invoke(product)
         }

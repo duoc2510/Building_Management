@@ -1,12 +1,15 @@
 package com.app.buildingmanagement
 
+import ImagePagerAdapter
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.RatingBar
 import com.google.android.material.chip.Chip
 import androidx.appcompat.app.AppCompatActivity
 import com.app.buildingmanagement.model.Product
-
+import android.widget.ImageView
+import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 class ProductDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,8 +31,9 @@ class ProductDetailActivity : AppCompatActivity() {
         // Set rating if you have it in Product (currently not present)
         findViewById<RatingBar>(R.id.ratingBar).rating = 4.5f // Or use product.rating if available
         findViewById<TextView>(R.id.ratingText).text = "4.5 (128 đánh giá)" // Update if dynamic
+        val imageUrls = listOf(product.imageUrl) // Wrap single URL in a list
+        val viewPager = findViewById<ViewPager2>(R.id.imageViewPager)
+        viewPager.adapter = ImagePagerAdapter(imageUrls)
 
-        // If you want to load image(s), use Glide or similar with imageViewPager
-        // Example: Glide.with(this).load(product.imageUrl).into(imageView)
     }
 }
