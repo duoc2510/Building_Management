@@ -11,7 +11,6 @@ import com.app.buildingmanagement.ProductDetailActivity
 import com.app.buildingmanagement.R
 import com.app.buildingmanagement.model.Product
 import com.bumptech.glide.Glide
-import com.google.android.material.button.MaterialButton
 
 class ProductAdapter(
     private val products: List<Product>
@@ -34,7 +33,7 @@ class ProductAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_product, parent, false)
+            .inflate(R.layout.item_product_admin, parent, false)
         return ProductViewHolder(view)
     }
 
