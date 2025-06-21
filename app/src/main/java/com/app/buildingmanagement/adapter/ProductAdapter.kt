@@ -46,7 +46,7 @@ class ProductAdapter(
         holder.quantity.text = "Quantity: ${product.quantity}"
         holder.status.text = product.status
         Glide.with(holder.itemView.context)
-            .load(product.imageUrl)
+            .load(product.imageUrl.replace("http://", "https://"))
             .placeholder(R.drawable.ic_launcher_background)
             .into(holder.image)
         holder.itemView.setOnClickListener {

@@ -1,7 +1,9 @@
 package com.app.buildingmanagement.fragment
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +11,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.app.buildingmanagement.AddProductActivity
 import com.app.buildingmanagement.R
 import com.app.buildingmanagement.adapter.ProductAdapter
 import com.app.buildingmanagement.adapter.ProductAdapterAdmin
@@ -53,6 +56,7 @@ class AdminShopFragment : Fragment() {
                 for (child in snapshot.children) {
                     val product = child.getValue(Product::class.java)
                     product?.id = child.key ?: ""
+                    Log.d("FirebaseData", "Loaded product: ${product?.name}, imageUrl = ${product?.imageUrl}")
                     if (product != null) products.add(product)
                 }
                 adapter.notifyDataSetChanged()
@@ -145,6 +149,16 @@ class AdminShopFragment : Fragment() {
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             .setTextColor(resources.getColor(R.color.gray, null))
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.fabAddProduct.setOnClickListener {
+            val intent = Intent(requireContext(), AddProductActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

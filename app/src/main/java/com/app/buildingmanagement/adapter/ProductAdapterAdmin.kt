@@ -1,6 +1,7 @@
 package com.app.buildingmanagement.adapter
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,9 +46,10 @@ class ProductAdapterAdmin(
         holder.price.text = "${product.price} VND"
         holder.quantity.text = "Quantity: ${product.quantity}"
         holder.status.text = product.status
+        Log.d("ProductAdapter", "Image URL: ${product.imageUrl}")
 
         Glide.with(holder.itemView.context)
-            .load(product.imageUrl)
+            .load(product.imageUrl.replace("http://", "https://"))
             .placeholder(R.drawable.ic_launcher_background)
             .into(holder.image)
 //        holder.itemView.setOnClickListener {
