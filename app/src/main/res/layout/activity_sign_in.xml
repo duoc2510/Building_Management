@@ -77,14 +77,7 @@
                 app:boxBackgroundMode="outline"
                 app:boxStrokeColor="@android:color/holo_blue_dark">
 
-                <EditText
-                    android:id="@+id/textSignInEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"
-                    android:hint="Email"
-                    android:textSize="@dimen/et_text_size"
-                    android:textColorHint="@android:color/darker_gray" />
+
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -134,57 +127,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tilPhone" />
-
-            <TextView
-                android:id="@+id/tvOrDivider"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="hoặc"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnSendOtp" />
-
-            <View
-                android:id="@+id/leftDivider"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginEnd="10dp"
-                android:background="@android:color/darker_gray"
-                app:layout_constraintBottom_toBottomOf="@+id/tvOrDivider"
-                app:layout_constraintEnd_toStartOf="@+id/tvOrDivider"
-                app:layout_constraintStart_toStartOf="@+id/btnSendOtp"
-                app:layout_constraintTop_toTopOf="@+id/tvOrDivider" />
-
-            <View
-                android:id="@+id/rightDivider"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginStart="10dp"
-                android:background="@android:color/darker_gray"
-                app:layout_constraintBottom_toBottomOf="@+id/tvOrDivider"
-                app:layout_constraintEnd_toEndOf="@+id/btnSendOtp"
-                app:layout_constraintStart_toEndOf="@+id/tvOrDivider"
-                app:layout_constraintTop_toTopOf="@+id/tvOrDivider" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnSignInWithPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
-                android:background="@android:color/transparent"
-                style="?android:attr/borderlessButtonStyle"
-                android:text="Đăng nhập bằng mật khẩu"
-                android:textColor="@android:color/holo_blue_dark"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvOrDivider" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
