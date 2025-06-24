@@ -18,7 +18,7 @@ class ImagePagerAdapter(private val imageUrls: List<String>) : RecyclerView.Adap
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         Glide.with(holder.imageView.context)
-            .load(imageUrls[position])
+            .load(imageUrls[position].replace("http://", "https://"))
             .placeholder(R.drawable.ic_launcher_background)
             .into(holder.imageView)
     }
