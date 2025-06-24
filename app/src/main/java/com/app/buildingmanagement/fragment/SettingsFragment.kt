@@ -404,7 +404,7 @@ class SettingsFragment : Fragment() {
                 Log.d(TAG, "Cache cleared on logout")
 
                 // Đăng xuất khỏi Firebase
-                auth.signOut()
+                FirebaseAuth.getInstance().signOut()
 
                 // Chuyển đến màn hình đăng nhập
                 val intent = Intent(requireContext(), SignInActivity::class.java)

@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
     id("org.jetbrains.kotlin.kapt")
+    id ("kotlin-parcelize")
+
 }
 
 val localProps = Properties()
@@ -88,4 +90,14 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     implementation ("com.google.firebase:firebase-firestore-ktx:24.10.3")
     implementation ("androidx.recyclerview:recyclerview:1.3.2")
+
+    // Picasso
+    implementation("com.squareup.picasso:picasso:2.71828")
+
+    // Cloudinary
+    implementation("com.cloudinary:cloudinary-android:2.3.1")
+
+    // Desugar
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+
 }
