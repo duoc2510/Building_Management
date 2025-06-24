@@ -99,7 +99,7 @@ class SettingsFragment : Fragment() {
         }
 
         binding?.btnSupport?.setOnClickListener {
-            openDialer("0398103352")
+            openDialer("09325654312")
         }
 
         binding?.btnAbout?.setOnClickListener {

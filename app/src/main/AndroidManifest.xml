@@ -20,9 +20,9 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/hcmute"
+        android:icon="@mipmap/logo_fpt_fixed"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/hcmute_round"
+        android:roundIcon="@mipmap/logo_fpt_fixed"
         android:supportsRtl="true"
         android:theme="@style/Theme.BuildingManagement"
         tools:targetApi="31">
@@ -39,7 +39,7 @@
         <!-- FCM Default notification icon và channel -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/icon_hcmute_notification" />
+            android:resource="@drawable/logo_fpt" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="fcm_default_channel" />
