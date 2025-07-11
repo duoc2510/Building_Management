@@ -37,10 +37,12 @@ import com.app.buildingmanagement.ProductDetailActivity
 
 @Composable
 fun ShopScreen() {
+    val context = LocalContext.current
     var searchText by remember { mutableStateOf("") }
-    var products by remember { mutableStateOf(listOf<Product>()) }
+    var allProducts by remember { mutableStateOf(listOf<Product>()) }
+    var filteredProducts by remember { mutableStateOf(listOf<Product>()) }
 
-    // Load products from Firebase
+    // Load sản phẩm từ Firebase
     LaunchedEffect(Unit) {
         val db = FirebaseDatabase.getInstance().getReference("product")
         db.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -50,12 +52,15 @@ fun ShopScreen() {
                     val product = child.getValue(Product::class.java)
                     if (product != null) list.add(product)
                 }
-                products = list
+                allProducts = list
+                filteredProducts = list // Gán ban đầu = toàn bộ
             }
+
             override fun onCancelled(error: DatabaseError) {}
         })
     }
 
+    // UI
     Column(modifier = Modifier.fillMaxSize().background(Color(0xFFF5F5F5))) {
         // Header + search
         Column(
@@ -67,7 +72,9 @@ fun ShopScreen() {
         ) {
             Text(
                 text = "Cửa hàng",
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF333333),
@@ -76,24 +83,31 @@ fun ShopScreen() {
 
             OutlinedTextField(
                 value = searchText,
-                onValueChange = { searchText = it },
+                onValueChange = {
+                    searchText = it
+                    filteredProducts = if (it.isBlank()) {
+                        allProducts
+                    } else {
+                        allProducts.filter { product ->
+                            product.name?.contains(it.trim(), ignoreCase = true) == true
+                        }
+                    }
+                },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 placeholder = { Text("Tìm kiếm sản phẩm...") },
                 shape = RoundedCornerShape(25.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(16.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     backgroundColor = Color.White
                 )
             )
         }
 
-        // Danh sách sản phẩm
-        val context = LocalContext.current
-
-        LazyColumn {
-            items(products) { product ->
+        // Danh sách sản phẩm đã lọc
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(filteredProducts) { product ->
                 ProductItem(product = product) {
                     val intent = Intent(context, ProductDetailActivity::class.java)
                     intent.putExtra("product", product)

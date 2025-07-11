@@ -440,6 +440,7 @@
                             android:layout_marginEnd="20dp">
 
                             <TextView
+                                android:id="@+id/tvAverageRating"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="4.5"
@@ -449,6 +450,7 @@
 
                             <RatingBar
                                 style="?android:attr/ratingBarStyleSmall"
+                                android:id="@+id/ratingBarAverage"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:rating="4.5"
@@ -457,6 +459,7 @@
                                 android:layout_marginBottom="4dp" />
 
                             <TextView
+                                android:id="@+id/tvTotalRatingCount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="128 đánh giá"
@@ -473,6 +476,7 @@
 
                             <!-- 5 sao -->
                             <LinearLayout
+
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
@@ -494,6 +498,7 @@
                                     app:tint="#FF9800" />
 
                                 <ProgressBar
+                                    android:id="@+id/progressBar5"
                                     style="?android:attr/progressBarStyleHorizontal"
                                     android:layout_width="0dp"
                                     android:layout_height="8dp"
@@ -503,6 +508,7 @@
                                     android:layout_marginEnd="8dp" />
 
                                 <TextView
+                                    android:id="@+id/tvCount5"
                                     android:layout_width="30dp"
                                     android:layout_height="wrap_content"
                                     android:text="75"
@@ -535,6 +541,7 @@
                                     app:tint="#FF9800" />
 
                                 <ProgressBar
+                                    android:id="@+id/progressBar4"
                                     style="?android:attr/progressBarStyleHorizontal"
                                     android:layout_width="0dp"
                                     android:layout_height="8dp"
@@ -544,6 +551,7 @@
                                     android:layout_marginEnd="8dp" />
 
                                 <TextView
+                                    android:id="@+id/tvCount4"
                                     android:layout_width="30dp"
                                     android:layout_height="wrap_content"
                                     android:text="35"
@@ -576,6 +584,7 @@
                                     app:tint="#FF9800" />
 
                                 <ProgressBar
+                                    android:id="@+id/progressBar3"
                                     style="?android:attr/progressBarStyleHorizontal"
                                     android:layout_width="0dp"
                                     android:layout_height="8dp"
@@ -585,6 +594,7 @@
                                     android:layout_marginEnd="8dp" />
 
                                 <TextView
+                                    android:id="@+id/tvCount3"
                                     android:layout_width="30dp"
                                     android:layout_height="wrap_content"
                                     android:text="15"
@@ -617,6 +627,7 @@
                                     app:tint="#FF9800" />
 
                                 <ProgressBar
+                                    android:id="@+id/progressBar2"
                                     style="?android:attr/progressBarStyleHorizontal"
                                     android:layout_width="0dp"
                                     android:layout_height="8dp"
@@ -626,6 +637,7 @@
                                     android:layout_marginEnd="8dp" />
 
                                 <TextView
+                                    android:id="@+id/tvCount2"
                                     android:layout_width="30dp"
                                     android:layout_height="wrap_content"
                                     android:text="8"
@@ -657,6 +669,7 @@
                                     app:tint="#FF9800" />
 
                                 <ProgressBar
+                                    android:id="@+id/progressBar1"
                                     style="?android:attr/progressBarStyleHorizontal"
                                     android:layout_width="0dp"
                                     android:layout_height="8dp"
@@ -666,6 +679,7 @@
                                     android:layout_marginEnd="8dp" />
 
                                 <TextView
+                                    android:id="@+id/tvCount1"
                                     android:layout_width="30dp"
                                     android:layout_height="wrap_content"
                                     android:text="5"
@@ -679,190 +693,16 @@
 
                     </LinearLayout>
 
-                    <!-- Danh sách Review -->
-                    <LinearLayout
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/reviewRecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:nestedScrollingEnabled="false"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="16dp" />
 
-                        <!-- Review Item 1 -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
 
-                            android:padding="16dp"
-                            android:layout_marginBottom="12dp">
 
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical"
-                                android:layout_marginBottom="8dp">
-
-                                <ImageView
-                                    android:layout_width="40dp"
-                                    android:layout_height="40dp"
-                                    android:src="@drawable/cat"
-                                    android:layout_marginEnd="12dp"
-                                    android:background="@drawable/circle_background" />
-
-                                <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="Trần Thị B"
-                                        android:textSize="16sp"
-                                        android:textStyle="bold"
-                                        android:textColor="#1A1A1A" />
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="1 tuần trước"
-                                        android:textSize="12sp"
-                                        android:textColor="#757575" />
-
-                                </LinearLayout>
-
-                                <RatingBar
-                                    style="?android:attr/ratingBarStyleSmall"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:rating="4"
-                                    android:stepSize="1"
-                                    android:isIndicator="true" />
-
-                            </LinearLayout>
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Sản phẩm ok, đúng như mô tả. Mình hài lòng với chất lượng này. Có điều giao hàng hơi chậm một chút."
-                                android:textSize="14sp"
-                                android:textColor="#424242"
-                                android:lineSpacingExtra="2dp"
-                                android:layout_marginBottom="8dp" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical">
-
-                                <ImageView
-                                    android:layout_width="16dp"
-                                    android:layout_height="16dp"
-                                    android:src="@drawable/thumbs_up"
-                                    android:layout_marginEnd="4dp"
-                                    app:tint="#4CAF50" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Hữu ích (8)"
-                                    android:textSize="12sp"
-                                    android:textColor="#4CAF50" />
-
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                        <!-- Review Item 3 -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-
-                            android:padding="16dp">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical"
-                                android:layout_marginBottom="8dp">
-
-                                <ImageView
-                                    android:layout_width="40dp"
-                                    android:layout_height="40dp"
-                                    android:src="@drawable/cat"
-                                    android:layout_marginEnd="12dp"
-                                    android:background="@drawable/circle_background" />
-
-                                <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="Lê Văn C"
-                                        android:textSize="16sp"
-                                        android:textStyle="bold"
-                                        android:textColor="#1A1A1A" />
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="2 tuần trước"
-                                        android:textSize="12sp"
-                                        android:textColor="#757575" />
-
-                                </LinearLayout>
-
-                                <RatingBar
-                                    style="?android:attr/ratingBarStyleSmall"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:rating="5"
-                                    android:stepSize="1"
-                                    android:isIndicator="true" />
-
-                            </LinearLayout>
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Chất lượng tuyệt vời! Đã sử dụng được 2 tuần rồi, hoạt động rất ổn định. Recommend cho mọi người."
-                                android:textSize="14sp"
-                                android:textColor="#424242"
-                                android:lineSpacingExtra="2dp"
-                                android:layout_marginBottom="8dp" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical">
-
-                                <ImageView
-                                    android:layout_width="16dp"
-                                    android:layout_height="16dp"
-                                    android:src="@drawable/thumbs_up"
-                                    android:layout_marginEnd="4dp"
-                                    app:tint="#4CAF50" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Hữu ích (15)"
-                                    android:textSize="12sp"
-                                    android:textColor="#4CAF50" />
-
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
 
                     <!-- Button Viết đánh giá -->
                     <com.google.android.material.button.MaterialButton
