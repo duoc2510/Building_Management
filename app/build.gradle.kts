@@ -134,6 +134,8 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.16.0")
 
     implementation ("androidx.navigation:navigation-fragment-ktx:2.7.7")
+    implementation ("io.coil-kt:coil-compose:2.4.0")
+    implementation ("androidx.compose.material:material:1.5.4")
 
 }
 

@@ -9,6 +9,7 @@ import com.app.buildingmanagement.fragment.HomeScreen
 import com.app.buildingmanagement.fragment.ChartScreen
 import com.app.buildingmanagement.fragment.PaymentScreen
 import com.app.buildingmanagement.fragment.SettingsScreen
+import com.app.buildingmanagement.fragment.ShopScreen
 
 @Composable
 fun AppNavigationHost(
@@ -27,7 +28,9 @@ fun AppNavigationHost(
         composable(AppDestinations.CHART) {
             ChartScreen()
         }
-        
+        composable(AppDestinations.SHOP) {
+            ShopScreen()
+        }
         composable(AppDestinations.PAYMENT) {
             PaymentScreen()
         }

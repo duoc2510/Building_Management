@@ -10,6 +10,8 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Payment
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.outlined.ShoppingCart
 
 // Navigation routes
 object AppDestinations {
@@ -17,6 +19,7 @@ object AppDestinations {
     const val CHART = "chart"
     const val PAYMENT = "payment"
     const val SETTINGS = "settings"
+    const val SHOP = "shop"
 }
 
 // Bottom Navigation Items
@@ -42,6 +45,13 @@ val bottomNavItems = listOf(
         selectedIcon = Icons.Filled.Assessment,
         unselectedIcon = Icons.Outlined.Assessment,
         contentDescription = "Xem biểu đồ thống kê"
+    ),
+    BottomNavItem(
+        route = AppDestinations.SHOP,
+        title = "Cửa hàng",
+        selectedIcon = Icons.Filled.ShoppingCart,
+        unselectedIcon = Icons.Outlined.ShoppingCart,
+        contentDescription = "Cửa hàng"
     ),
     BottomNavItem(
         route = AppDestinations.PAYMENT,

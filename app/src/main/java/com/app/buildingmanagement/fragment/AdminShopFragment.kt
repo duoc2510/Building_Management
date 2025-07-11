@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.buildingmanagement.AddProductActivity
 import com.app.buildingmanagement.R
-import com.app.buildingmanagement.adapter.ProductAdapter
 import com.app.buildingmanagement.adapter.ProductAdapterAdmin
 import com.app.buildingmanagement.databinding.FragmentAdminShopBinding
 import com.app.buildingmanagement.model.Product
