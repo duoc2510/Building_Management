@@ -22,6 +22,7 @@ class AdminShopFragment : Fragment() {
 
     private val db = FirebaseDatabase.getInstance().getReference("product")
     private val products = mutableListOf<Product>()
+    private val allProducts = mutableListOf<Product>()
     private lateinit var adapter: ProductAdapterAdmin
 
     private var _binding: FragmentAdminShopBinding? = null
@@ -52,11 +53,15 @@ class AdminShopFragment : Fragment() {
         db.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 products.clear()
+                allProducts.clear() // thêm dòng này
+
                 for (child in snapshot.children) {
                     val product = child.getValue(Product::class.java)
                     product?.id = child.key ?: ""
-                    Log.d("FirebaseData", "Loaded product: ${product?.name}, imageUrl = ${product?.imageUrl}")
-                    if (product != null) products.add(product)
+                    if (product != null) {
+                        products.add(product)
+                        allProducts.add(product) // thêm dòng này
+                    }
                 }
                 adapter.notifyDataSetChanged()
             }
@@ -156,6 +161,27 @@ class AdminShopFragment : Fragment() {
             val intent = Intent(requireContext(), AddProductActivity::class.java)
             startActivity(intent)
         }
+        binding.searchEditText.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s.toString().trim()
+                products.clear()
+
+                if (query.isBlank()) {
+                    products.addAll(allProducts)
+                } else {
+                    val filtered = allProducts.filter {
+                        it.name?.contains(query, ignoreCase = true) == true
+                    }
+                    products.addAll(filtered)
+                }
+
+                adapter.notifyDataSetChanged()
+            }
+
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
     }
 
 
