@@ -1,0 +1,80 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@android:color/white">
+
+    <!-- Tên sản phẩm -->
+    <TextView
+        android:id="@+id/cartProductName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tên sản phẩm"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <!-- Giá sản phẩm -->
+    <TextView
+        android:id="@+id/cartProductPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Giá: 0 đ"
+        android:textSize="14sp"
+        android:textColor="#FF5722"
+        android:paddingTop="4dp" />
+
+    <!-- Khu vực số lượng + nút tăng giảm -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/btnDecrease"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:text="-"
+            android:textSize="18sp"
+            android:backgroundTint="#6200EE"
+            android:textColor="#FFFFFF"/>
+
+        <TextView
+            android:id="@+id/cartProductQuantity"
+            android:layout_width="40dp"
+            android:layout_height="36dp"
+            android:gravity="center"
+            android:text="1"
+            android:textSize="16sp"
+            android:textColor="#607D8B" />
+
+        <Button
+            android:id="@+id/btnIncrease"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:text="+"
+            android:textSize="18sp"
+            android:backgroundTint="#6200EE"
+            android:textColor="#FFFFFF"/>
+    </LinearLayout>
+
+    <!-- Nút xóa nằm bên phải, ở dòng riêng -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:paddingTop="8dp">
+
+        <Button
+            android:id="@+id/btnRemoveItem"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Xóa"
+            android:textSize="12sp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#F44336"
+            android:paddingHorizontal="16dp" />
+    </LinearLayout>
+</LinearLayout>

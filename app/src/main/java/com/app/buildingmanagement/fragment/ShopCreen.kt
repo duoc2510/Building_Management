@@ -1,39 +1,32 @@
 package com.app.buildingmanagement.fragment
 
 import android.content.Intent
-import androidx.compose.runtime.*
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.Alignment
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.app.buildingmanagement.CartActivity
+import com.app.buildingmanagement.ProductDetailActivity
+import com.app.buildingmanagement.model.CartItem
 import com.app.buildingmanagement.model.Product
 import com.google.firebase.database.*
 import java.text.NumberFormat
-import java.util.Locale
-import androidx.compose.foundation.*
-
-import androidx.compose.ui.unit.*
-
-import androidx.compose.foundation.lazy.*
-
-import androidx.compose.ui.graphics.Color
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.ui.layout.ContentScale
-
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.platform.LocalContext
-import com.app.buildingmanagement.ProductDetailActivity
+import java.util.*
 
 @Composable
 fun ShopScreen() {
@@ -41,8 +34,8 @@ fun ShopScreen() {
     var searchText by remember { mutableStateOf("") }
     var allProducts by remember { mutableStateOf(listOf<Product>()) }
     var filteredProducts by remember { mutableStateOf(listOf<Product>()) }
+    var cartItems by remember { mutableStateOf(mutableListOf<CartItem>()) }
 
-    // Load sản phẩm từ Firebase
     LaunchedEffect(Unit) {
         val db = FirebaseDatabase.getInstance().getReference("product")
         db.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -53,16 +46,14 @@ fun ShopScreen() {
                     if (product != null) list.add(product)
                 }
                 allProducts = list
-                filteredProducts = list // Gán ban đầu = toàn bộ
+                filteredProducts = list
             }
 
             override fun onCancelled(error: DatabaseError) {}
         })
     }
 
-    // UI
     Column(modifier = Modifier.fillMaxSize().background(Color(0xFFF5F5F5))) {
-        // Header + search
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -70,16 +61,31 @@ fun ShopScreen() {
                 .padding(bottom = 8.dp)
                 .shadow(4.dp)
         ) {
-            Text(
-                text = "Cửa hàng",
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF333333),
-                textAlign = TextAlign.Center
-            )
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Cửa hàng",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF333333)
+                )
+
+                IconButton(onClick = {
+                    val intent = Intent(context, CartActivity::class.java)
+                    intent.putParcelableArrayListExtra(
+                        "cartItems",
+                        ArrayList(cartItems)
+                    )
+                    context.startActivity(intent)
+                }) {
+                    Icon(Icons.Default.ShoppingCart, contentDescription = "Cart", tint = Color(0xFF4CAF50))
+                }
+            }
 
             OutlinedTextField(
                 value = searchText,
@@ -89,7 +95,7 @@ fun ShopScreen() {
                         allProducts
                     } else {
                         allProducts.filter { product ->
-                            product.name?.contains(it.trim(), ignoreCase = true) == true
+                            product.name.contains(it.trim(), ignoreCase = true)
                         }
                     }
                 },
@@ -105,14 +111,25 @@ fun ShopScreen() {
             )
         }
 
-        // Danh sách sản phẩm đã lọc
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(filteredProducts) { product ->
-                ProductItem(product = product) {
-                    val intent = Intent(context, ProductDetailActivity::class.java)
-                    intent.putExtra("product", product)
-                    context.startActivity(intent)
-                }
+                ProductItem(
+                    product = product,
+                    onClick = {
+                        val intent = Intent(context, ProductDetailActivity::class.java)
+                        intent.putExtra("product", product)
+                        context.startActivity(intent)
+                    },
+                    onAddToCart = { selectedProduct ->
+                        val existingItem = cartItems.find { it.product.id == selectedProduct.id }
+                        if (existingItem != null) {
+                            existingItem.quantity++
+                        } else {
+                            cartItems.add(CartItem(product = selectedProduct, quantity = 1))
+                        }
+                        cartItems = cartItems.toMutableList()
+                    }
+                )
                 Spacer(modifier = Modifier.height(12.dp))
             }
         }
@@ -120,13 +137,17 @@ fun ShopScreen() {
 }
 
 @Composable
-fun ProductItem(product: Product, onClick: () -> Unit) {
+fun ProductItem(
+    product: Product,
+    onClick: () -> Unit,
+    onAddToCart: (Product) -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
         elevation = 4.dp
-    )  {
+    ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.Top) {
                 Card(
@@ -145,52 +166,23 @@ fun ProductItem(product: Product, onClick: () -> Unit) {
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Column(modifier = Modifier.weight(1f)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = product.name ?: "Tên sản phẩm",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
-                            color = Color(0xFF1A1A1A),
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.weight(1f)
-                        )
-
-                        Spacer(modifier = Modifier.width(4.dp))
-
-                        Surface(
-                            shape = RoundedCornerShape(8.dp),
-                            color = Color(0xFFE8F5E8),
-                            border = BorderStroke(1.dp, Color(0xFF4CAF50))
-                        ) {
-                            Text(
-                                text = product.status ?: "Còn hàng",
-                                fontSize = 10.sp,
-                                color = Color(0xFF2E7D32),
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
-                            )
-                        }
-                    }
+                    Text(
+                        text = product.name,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        color = Color(0xFF1A1A1A),
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
 
                     Text(
-                        text = product.description ?: "Mô tả sản phẩm",
+                        text = product.description,
                         fontSize = 14.sp,
                         color = Color(0xFF757575),
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.padding(top = 4.dp)
                     )
-
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 6.dp)) {
-                        Icon(Icons.Default.Settings, contentDescription = null, tint = Color(0xFF9C27B0), modifier = Modifier.size(16.dp))
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = product.type ?: "Loại sản phẩm",
-                            fontSize = 12.sp,
-                            color = Color(0xFF9C27B0),
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
                 }
             }
 
@@ -198,30 +190,14 @@ fun ProductItem(product: Product, onClick: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Security, contentDescription = null, tint = Color(0xFFFF5722), modifier = Modifier.size(20.dp))
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = formatVND(product.price),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFFFF5722)
-                    )
-                }
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.List, contentDescription = null, tint = Color(0xFF607D8B), modifier = Modifier.size(16.dp))
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "SL: ${product.quantity}",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF607D8B)
-                    )
-                }
+                Text(
+                    text = formatVND(product.price),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFFF5722)
+                )
             }
 
             Divider(modifier = Modifier.padding(vertical = 12.dp), color = Color(0xFFE0E0E0))
@@ -231,7 +207,7 @@ fun ProductItem(product: Product, onClick: () -> Unit) {
                 horizontalArrangement = Arrangement.End
             ) {
                 Button(
-                    onClick = { /* Thêm vào giỏ */ },
+                    onClick = { onAddToCart(product) },
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50)),
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
                     modifier = Modifier.height(36.dp)
@@ -244,6 +220,7 @@ fun ProductItem(product: Product, onClick: () -> Unit) {
         }
     }
 }
+
 fun formatVND(amount: Int): String {
     val formatter = NumberFormat.getInstance(Locale("vi", "VN"))
     return formatter.format(amount) + " đ"

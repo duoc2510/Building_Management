@@ -85,6 +85,8 @@
         <activity android:name=".AdminActivity" />
         <activity android:name=".AddProductActivity" android:exported="true" />
         <activity android:name=".ProductDetailActivity" />
+        <activity android:name=".CartActivity" />
+
 
 
         <meta-data

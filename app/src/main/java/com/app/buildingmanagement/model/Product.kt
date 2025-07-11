@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Product(
+data class  Product(
     var id: String = "",
     val name: String = "",
     val description: String = "",
