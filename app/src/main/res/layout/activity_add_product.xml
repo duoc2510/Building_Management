@@ -1,0 +1,81 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Xem trước ảnh sản phẩm -->
+        <ImageView
+            android:id="@+id/imgPreview"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background" />
+
+        <!-- Nút chọn ảnh -->
+        <Button
+            android:id="@+id/btnChooseImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Choose Image"
+            android:textColor="#000000"
+            android:backgroundTint="#CCCCCC" />
+
+        <!-- Tên sản phẩm -->
+        <EditText
+            android:id="@+id/edtName"
+            android:hint="Product Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- Mô tả sản phẩm -->
+        <EditText
+            android:id="@+id/edtDescription"
+            android:hint="Description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- Loại sản phẩm -->
+        <EditText
+            android:id="@+id/edtType"
+            android:hint="Type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- Giá sản phẩm -->
+        <EditText
+            android:id="@+id/edtPrice"
+            android:hint="Price"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- Số lượng tồn kho -->
+        <EditText
+            android:id="@+id/edtQuantity"
+            android:hint="Quantity"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- Trạng thái sản phẩm -->
+        <EditText
+            android:id="@+id/edtStatus"
+            android:hint="Status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- Nút upload -->
+        <Button
+            android:id="@+id/btnUpload"
+            android:text="Upload Product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="#000000"
+            android:backgroundTint="#CCCCCC" />
+    </LinearLayout>
+</ScrollView>
