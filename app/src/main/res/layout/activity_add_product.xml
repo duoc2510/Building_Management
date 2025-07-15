@@ -62,9 +62,8 @@
             android:layout_height="wrap_content" />
 
         <!-- Trạng thái sản phẩm -->
-        <EditText
-            android:id="@+id/edtStatus"
-            android:hint="Status"
+        <Spinner
+            android:id="@+id/spinnerStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

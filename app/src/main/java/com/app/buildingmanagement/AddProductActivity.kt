@@ -21,7 +21,7 @@ class AddProductActivity : AppCompatActivity() {
     private lateinit var edtType: EditText
     private lateinit var edtPrice: EditText
     private lateinit var edtQuantity: EditText
-    private lateinit var edtStatus: EditText
+    private lateinit var spinnerStatus: Spinner
     private lateinit var btnChooseImage: Button
     private lateinit var btnUpload: Button
 
@@ -47,9 +47,14 @@ class AddProductActivity : AppCompatActivity() {
         edtType = findViewById(R.id.edtType)
         edtPrice = findViewById(R.id.edtPrice)
         edtQuantity = findViewById(R.id.edtQuantity)
-        edtStatus = findViewById(R.id.edtStatus)
         btnChooseImage = findViewById(R.id.btnChooseImage)
         btnUpload = findViewById(R.id.btnUpload)
+        spinnerStatus = findViewById(R.id.spinnerStatus)
+
+        val statusOptions = arrayOf("Còn Hàng", "Hết Hàng")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, statusOptions)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerStatus.adapter = adapter
 
         btnChooseImage.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
@@ -115,7 +120,7 @@ class AddProductActivity : AppCompatActivity() {
             "type" to edtType.text.toString(),
             "price" to price,
             "quantity" to quantity,
-            "status" to edtStatus.text.toString()
+            "status" to spinnerStatus.selectedItem.toString()
         )
 
         db.child(productId).setValue(product)
