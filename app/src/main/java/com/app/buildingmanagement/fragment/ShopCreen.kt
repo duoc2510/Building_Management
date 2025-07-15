@@ -27,6 +27,8 @@ import com.app.buildingmanagement.model.Product
 import com.google.firebase.database.*
 import java.text.NumberFormat
 import java.util.*
+import android.widget.Toast
+
 
 @Composable
 fun ShopScreen() {
@@ -125,6 +127,7 @@ fun ShopScreen() {
                             cartItems.add(CartItem(product = selectedProduct, quantity = 1))
                         }
                         cartItems = cartItems.toMutableList()
+                        Toast.makeText(context, "Đã thêm ${selectedProduct.name} vào giỏ hàng", Toast.LENGTH_SHORT).show()
                     }
                 )
                 Spacer(modifier = Modifier.height(12.dp))

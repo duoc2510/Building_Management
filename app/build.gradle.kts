@@ -128,7 +128,6 @@ dependencies {
     // Cloudinary
     implementation("com.cloudinary:cloudinary-android:2.3.1")
 
-    // Desugar
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
     implementation ("com.github.bumptech.glide:glide:4.16.0")
