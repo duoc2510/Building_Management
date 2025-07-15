@@ -77,10 +77,7 @@ fun ShopScreen() {
 
                 IconButton(onClick = {
                     val intent = Intent(context, CartActivity::class.java)
-                    intent.putParcelableArrayListExtra(
-                        "cartItems",
-                        ArrayList(cartItems)
-                    )
+                    intent.putParcelableArrayListExtra("cartItems", ArrayList(cartItems))
                     context.startActivity(intent)
                 }) {
                     Icon(Icons.Default.ShoppingCart, contentDescription = "Cart", tint = Color(0xFF4CAF50))
@@ -95,7 +92,7 @@ fun ShopScreen() {
                         allProducts
                     } else {
                         allProducts.filter { product ->
-                            product.name.contains(it.trim(), ignoreCase = true)
+                            product.name?.contains(it.trim(), ignoreCase = true) == true
                         }
                     }
                 },
@@ -166,23 +163,52 @@ fun ProductItem(
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = product.name,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
-                        color = Color(0xFF1A1A1A),
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = product.name ?: "Tên sản phẩm",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                            color = Color(0xFF1A1A1A),
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        Spacer(modifier = Modifier.width(4.dp))
+
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = Color(0xFFE8F5E8),
+                            border = BorderStroke(1.dp, Color(0xFF4CAF50))
+                        ) {
+                            Text(
+                                text = product.status ?: "Còn hàng",
+                                fontSize = 10.sp,
+                                color = Color(0xFF2E7D32),
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
 
                     Text(
-                        text = product.description,
+                        text = product.description ?: "Mô tả sản phẩm",
                         fontSize = 14.sp,
                         color = Color(0xFF757575),
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.padding(top = 4.dp)
                     )
+
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 6.dp)) {
+                        Icon(Icons.Default.Settings, contentDescription = null, tint = Color(0xFF9C27B0), modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = product.type ?: "Loại sản phẩm",
+                            fontSize = 12.sp,
+                            color = Color(0xFF9C27B0),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
 
@@ -190,14 +216,30 @@ fun ProductItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = formatVND(product.price),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFFFF5722)
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.Security, contentDescription = null, tint = Color(0xFFFF5722), modifier = Modifier.size(20.dp))
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = formatVND(product.price),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFFF5722)
+                    )
+                }
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.List, contentDescription = null, tint = Color(0xFF607D8B), modifier = Modifier.size(16.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "SL: ${product.quantity}",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF607D8B)
+                    )
+                }
             }
 
             Divider(modifier = Modifier.padding(vertical = 12.dp), color = Color(0xFFE0E0E0))
