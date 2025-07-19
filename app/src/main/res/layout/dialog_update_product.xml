@@ -1,62 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#FAFAFA">
 
     <LinearLayout
         android:orientation="vertical"
-        android:padding="16dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:dividerPadding="12dp"
+        android:showDividers="middle">
 
+        <!-- Xem trước ảnh sản phẩm -->
+        <ImageView
+            android:id="@+id/imgPreview"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginBottom="8dp"
+            android:scaleType="centerCrop"
+            android:background="#E0E0E0"
+            android:src="@drawable/ic_launcher_background" />
+
+        <!-- Nút chọn ảnh -->
+        <Button
+            android:id="@+id/btnChooseImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chọn Ảnh"
+            android:backgroundTint="#DDDDDD"
+            android:textColor="#000000"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Tên sản phẩm -->
         <EditText
-            android:id="@+id/editName"
+            android:id="@+id/edtName"
             android:hint="Tên sản phẩm"
-            android:inputType="textPersonName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:inputType="text" />
 
+        <!-- Giá sản phẩm -->
         <EditText
-            android:id="@+id/editDescription"
-            android:hint="Mô tả"
-            android:inputType="textMultiLine"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <EditText
-            android:id="@+id/editType"
-            android:hint="Loại"
-            android:inputType="text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <EditText
-            android:id="@+id/editPrice"
+            android:id="@+id/edtPrice"
             android:hint="Giá"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:inputType="numberDecimal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_marginTop="8dp" />
 
+        <!-- Mô tả sản phẩm -->
         <EditText
-            android:id="@+id/editQuantity"
-            android:hint="Số lượng"
-            android:inputType="number"
+            android:id="@+id/edtDescription"
+            android:hint="Mô tả"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:lines="3"
+            android:layout_marginTop="8dp" />
 
+        <!-- Loại sản phẩm -->
         <EditText
-            android:id="@+id/editStatus"
-            android:hint="Trạng thái"
+            android:id="@+id/edtType"
+            android:hint="Loại sản phẩm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:inputType="text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_marginTop="8dp" />
 
+        <!-- Số lượng tồn kho -->
         <EditText
-            android:id="@+id/editImageUrl"
-            android:hint="Link ảnh"
-            android:inputType="textUri"
+            android:id="@+id/edtQuantity"
+            android:hint="Số lượng tồn kho"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:layout_marginTop="8dp" />
+
+        <!-- Trạng thái sản phẩm -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trạng thái"
+            android:textColor="#333333"
+            android:textSize="16sp"
+            android:layout_marginTop="12dp" />
+
+        <Spinner
+            android:id="@+id/spinnerStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp" />
+
 
     </LinearLayout>
 </ScrollView>

@@ -28,6 +28,7 @@ import com.google.firebase.database.*
 import java.text.NumberFormat
 import java.util.*
 import android.widget.Toast
+import com.app.buildingmanagement.CartManager
 
 
 @Composable
@@ -120,15 +121,10 @@ fun ShopScreen() {
                         context.startActivity(intent)
                     },
                     onAddToCart = { selectedProduct ->
-                        val existingItem = cartItems.find { it.product.id == selectedProduct.id }
-                        if (existingItem != null) {
-                            existingItem.quantity++
-                        } else {
-                            cartItems.add(CartItem(product = selectedProduct, quantity = 1))
-                        }
-                        cartItems = cartItems.toMutableList()
+                        CartManager.addToCart(context, selectedProduct)
                         Toast.makeText(context, "Đã thêm ${selectedProduct.name} vào giỏ hàng", Toast.LENGTH_SHORT).show()
                     }
+
                 )
                 Spacer(modifier = Modifier.height(12.dp))
             }

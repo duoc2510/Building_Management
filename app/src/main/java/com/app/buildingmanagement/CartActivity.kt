@@ -24,10 +24,13 @@ class CartActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val cartItemsFromIntent = intent.getParcelableArrayListExtra<CartItem>("cartItems") ?: arrayListOf()
-
         setContent {
-            val cartItems = remember { mutableStateListOf<CartItem>().apply { addAll(cartItemsFromIntent) } }
+            // Lấy giỏ hàng từ CartManager
+            val cartItems = remember {
+                mutableStateListOf<CartItem>().apply {
+                    addAll(CartManager.getCart(this@CartActivity))
+                }
+            }
 
             Scaffold(
                 topBar = {
@@ -52,7 +55,18 @@ class CartActivity : AppCompatActivity() {
                     items(cartItems, key = { it.product.id }) { cartItem ->
                         CartItemView(
                             cartItem = cartItem,
-                            onRemove = { cartItems.remove(cartItem) }
+                            onQuantityChange = { newQuantity ->
+                                // Cập nhật số lượng trong list và SharedPreferences
+                                val index = cartItems.indexOfFirst { it.product.id == cartItem.product.id }
+                                if (index != -1) {
+                                    cartItems[index] = cartItems[index].copy(quantity = newQuantity)
+                                    CartManager.saveCart(this@CartActivity, cartItems)
+                                }
+                            },
+                            onRemove = {
+                                cartItems.remove(cartItem)
+                                CartManager.saveCart(this@CartActivity, cartItems)
+                            }
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                     }
@@ -65,6 +79,7 @@ class CartActivity : AppCompatActivity() {
 @Composable
 fun CartItemView(
     cartItem: CartItem,
+    onQuantityChange: (Int) -> Unit,
     onRemove: () -> Unit
 ) {
     var quantity by remember { mutableStateOf(cartItem.quantity) }
@@ -99,7 +114,12 @@ fun CartItemView(
 
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 8.dp)) {
                         Button(
-                            onClick = { if (quantity > 1) quantity-- },
+                            onClick = {
+                                if (quantity > 1) {
+                                    quantity--
+                                    onQuantityChange(quantity)
+                                }
+                            },
                             modifier = Modifier.size(36.dp),
                             contentPadding = PaddingValues(0.dp)
                         ) {
@@ -116,7 +136,10 @@ fun CartItemView(
                         )
 
                         Button(
-                            onClick = { quantity++ },
+                            onClick = {
+                                quantity++
+                                onQuantityChange(quantity)
+                            },
                             modifier = Modifier.size(36.dp),
                             contentPadding = PaddingValues(0.dp)
                         ) {
@@ -126,7 +149,6 @@ fun CartItemView(
                 }
             }
 
-            // Nút Xóa
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
