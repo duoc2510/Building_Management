@@ -17,7 +17,7 @@
         android:name=".BuildingManagementApplication"
         android:allowBackup="false"
         android:enableOnBackInvokedCallback="true"
-        android:icon="@mipmap/hcmute"
+        android:icon="@mipmap/fpt"
         android:label="Building Management"
         android:roundIcon="@mipmap/hcmute_round"
         android:supportsRtl="true"

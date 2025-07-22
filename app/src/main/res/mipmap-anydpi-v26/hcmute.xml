@@ -3,6 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     tools:ignore="MonochromeLauncherIcon">
     <background android:drawable="@android:color/white"/>
-    <foreground android:drawable="@mipmap/hcmute_foreground"/>
+    <foreground android:drawable="@mipmap/fpt_forround"/>
 </adaptive-icon>
 
