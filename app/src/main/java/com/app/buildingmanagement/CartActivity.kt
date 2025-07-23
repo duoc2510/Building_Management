@@ -36,8 +36,6 @@ import java.util.*
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import androidx.activity.compose.rememberLauncherForActivityResult
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ServerValue
 
 class CartActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,21 +55,17 @@ class CartActivity : AppCompatActivity() {
                 if (result.resultCode == Activity.RESULT_OK) {
                     val intent = result.data
                     val success = intent?.getBooleanExtra("payment_success", false) ?: false
-
                     if (success) {
                         Toast.makeText(context, "Thanh toán thành công", Toast.LENGTH_SHORT).show()
-
-                        // === XOÁ GIỎ HÀNG ===
                         CartManager.clearCart(context)
                         cartItems.clear()
                     } else {
-                        Toast.makeText(context, "Thanh toán thất bại hoặc bị hủy1", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Thanh toán thất bại hoặc bị hủy", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(context, "Thanh toán thất bại hoặc bị hủy2", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Thanh toán thất bại hoặc bị hủy", Toast.LENGTH_SHORT).show()
                 }
             }
-
 
             Scaffold(
                 topBar = {
@@ -87,28 +81,43 @@ class CartActivity : AppCompatActivity() {
                     }
                 }
             ) { paddingValues ->
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .padding(16.dp)
-                ) {
-                    items(cartItems, key = { it.product.id }) { cartItem ->
-                        CartItemView(
-                            cartItem = cartItem,
-                            onQuantityChange = { newQuantity ->
-                                val index = cartItems.indexOfFirst { it.product.id == cartItem.product.id }
-                                if (index != -1) {
-                                    cartItems[index] = cartItems[index].copy(quantity = newQuantity)
+                if (cartItems.isEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Không có sản phẩm trong giỏ hàng",
+                            color = Color.Gray,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                            .padding(16.dp)
+                    ) {
+                        items(cartItems, key = { it.product.id }) { cartItem ->
+                            CartItemView(
+                                cartItem = cartItem,
+                                onQuantityChange = { newQuantity ->
+                                    val index = cartItems.indexOfFirst { it.product.id == cartItem.product.id }
+                                    if (index != -1) {
+                                        cartItems[index] = cartItems[index].copy(quantity = newQuantity)
+                                        CartManager.saveCart(this@CartActivity, cartItems)
+                                    }
+                                },
+                                onRemove = {
+                                    cartItems.remove(cartItem)
                                     CartManager.saveCart(this@CartActivity, cartItems)
                                 }
-                            },
-                            onRemove = {
-                                cartItems.remove(cartItem)
-                                CartManager.saveCart(this@CartActivity, cartItems)
-                            }
-                        )
-                        Spacer(modifier = Modifier.height(12.dp))
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
+                        }
                     }
                 }
             }
@@ -122,7 +131,37 @@ fun CartItemView(
     onQuantityChange: (Int) -> Unit,
     onRemove: () -> Unit
 ) {
+    val context = LocalContext.current
     var quantity by remember { mutableStateOf(cartItem.quantity) }
+    var showRemoveDialog by remember { mutableStateOf(false) }
+    val maxStock = cartItem.product.quantity // số lượng tồn kho
+
+    // Dialog khi nhập 0
+    if (showRemoveDialog) {
+        AlertDialog(
+            onDismissRequest = { showRemoveDialog = false },
+            title = { Text("Xóa sản phẩm") },
+            text = { Text("Bạn có muốn xóa sản phẩm này khỏi giỏ hàng?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showRemoveDialog = false
+                    onRemove()
+                    Toast.makeText(context, "Đã xóa sản phẩm", Toast.LENGTH_SHORT).show()
+                }) {
+                    Text("Có")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    showRemoveDialog = false
+                    quantity = 1
+                    onQuantityChange(1)
+                }) {
+                    Text("Không")
+                }
+            }
+        )
+    }
 
     Card(
         elevation = 4.dp,
@@ -140,13 +179,9 @@ fun CartItemView(
                 )
 
                 Column(modifier = Modifier.weight(1f)) {
+                    Text(cartItem.product.name, fontWeight = FontWeight.Bold)
                     Text(
-                        text = cartItem.product.name,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Text(
-                        text = "Giá: ${formatVND(cartItem.product.price)}",
+                        "Giá: ${formatVND(cartItem.product.price)}",
                         color = Color(0xFFFF5722),
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(top = 4.dp)
@@ -158,6 +193,8 @@ fun CartItemView(
                                 if (quantity > 1) {
                                     quantity--
                                     onQuantityChange(quantity)
+                                } else {
+                                    Toast.makeText(context, "Số lượng tối thiểu là 1", Toast.LENGTH_SHORT).show()
                                 }
                             },
                             modifier = Modifier.size(36.dp),
@@ -166,19 +203,41 @@ fun CartItemView(
                             Text("-")
                         }
 
-                        Text(
-                            text = quantity.toString(),
+                        OutlinedTextField(
+                            value = quantity.toString(),
+                            onValueChange = { text ->
+                                val num = text.toIntOrNull() ?: 0  // Cho phép nhận 0
+                                when {
+                                    num <= 0 -> {
+                                        // Nếu nhập 0 hoặc số âm -> hỏi xóa
+                                        showRemoveDialog = true
+                                    }
+                                    num > maxStock -> {
+                                        quantity = maxStock
+                                        onQuantityChange(maxStock)
+                                        Toast.makeText(context, "Chỉ còn $maxStock sản phẩm trong kho", Toast.LENGTH_SHORT).show()
+                                    }
+                                    else -> {
+                                        quantity = num
+                                        onQuantityChange(num)
+                                    }
+                                }
+                            },
                             modifier = Modifier
-                                .padding(horizontal = 12.dp)
-                                .width(32.dp),
-                            color = Color(0xFF607D8B),
-                            fontWeight = FontWeight.Bold
+                                .width(60.dp)
+                                .padding(horizontal = 8.dp),
+                            singleLine = true
                         )
+
 
                         Button(
                             onClick = {
-                                quantity++
-                                onQuantityChange(quantity)
+                                if (quantity < maxStock) {
+                                    quantity++
+                                    onQuantityChange(quantity)
+                                } else {
+                                    Toast.makeText(context, "Chỉ còn $maxStock sản phẩm trong kho", Toast.LENGTH_SHORT).show()
+                                }
                             },
                             modifier = Modifier.size(36.dp),
                             contentPadding = PaddingValues(0.dp)
@@ -224,7 +283,7 @@ fun BottomBar(cartItems: List<CartItem>, paymentLauncher: androidx.activity.resu
             Column {
                 Text("Tổng tiền:", fontWeight = FontWeight.SemiBold)
                 Text(
-                    text = formatVND(totalAmount),
+                    formatVND(totalAmount),
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFFFF5722)
                 )
@@ -259,12 +318,10 @@ fun openPaymentLink(
     paymentLauncher: androidx.activity.result.ActivityResultLauncher<Intent>
 ) {
     val phone = FirebaseAuth.getInstance().currentUser?.phoneNumber
-
     if (phone.isNullOrEmpty()) {
         Toast.makeText(context, "Không tìm thấy số điện thoại người dùng", Toast.LENGTH_SHORT).show()
         return
     }
-
     if (totalCost <= 0) {
         Toast.makeText(context, "Số tiền thanh toán không hợp lệ", Toast.LENGTH_SHORT).show()
         return
