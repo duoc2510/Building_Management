@@ -138,5 +138,8 @@ dependencies {
     implementation ("androidx.compose.material:material:1.5.4")
     implementation("androidx.activity:activity-compose:1.8.0")
 
+    //phuc thêm
+    implementation ("com.google.android.material:material:1.11.0")
+
 }
 

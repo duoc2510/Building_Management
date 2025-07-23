@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.firebase.database.FirebaseDatabase
 import java.util.*
 
@@ -21,7 +22,8 @@ class AddProductActivity : AppCompatActivity() {
     private lateinit var edtType: EditText
     private lateinit var edtPrice: EditText
     private lateinit var edtQuantity: EditText
-    private lateinit var spinnerStatus: Spinner
+    private lateinit var spinnerStatus: MaterialAutoCompleteTextView
+
     private lateinit var btnChooseImage: Button
     private lateinit var btnUpload: Button
 
@@ -49,12 +51,13 @@ class AddProductActivity : AppCompatActivity() {
         edtQuantity = findViewById(R.id.edtQuantity)
         btnChooseImage = findViewById(R.id.btnChooseImage)
         btnUpload = findViewById(R.id.btnUpload)
-        spinnerStatus = findViewById(R.id.spinnerStatus)
+        spinnerStatus = findViewById(R.id.autoCompleteStatus)
+
 
         val statusOptions = arrayOf("Còn Hàng", "Hết Hàng")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, statusOptions)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerStatus.adapter = adapter
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, statusOptions)
+        spinnerStatus.setAdapter(adapter)
+
 
         btnChooseImage.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
@@ -63,35 +66,84 @@ class AddProductActivity : AppCompatActivity() {
         }
 
         btnUpload.setOnClickListener {
-            if (imageUri != null) {
-                val pd = ProgressDialog(this)
-                pd.setMessage("Uploading...")
-                pd.show()
+            // Validate all input fields
+            val name = edtName.text.toString().trim()
+            val description = edtDescription.text.toString().trim()
+            val type = edtType.text.toString().trim()
+            val priceStr = edtPrice.text.toString().trim()
+            val quantityStr = edtQuantity.text.toString().trim()
+            val status = spinnerStatus.text.toString().trim()
 
-                MediaManager.get().upload(imageUri)
-                    .callback(object : UploadCallback {
-                        override fun onStart(requestId: String?) {}
-                        override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {}
-                        override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
-                            pd.dismiss()
-                            val imageUrl = resultData?.get("url").toString()
-                            saveProductToFirebase(imageUrl)
-                        }
-
-                        override fun onError(requestId: String?, error: ErrorInfo?) {
-                            pd.dismiss()
-                            Toast.makeText(applicationContext, "Upload failed: ${error?.description}", Toast.LENGTH_SHORT).show()
-                        }
-
-                        override fun onReschedule(requestId: String?, error: ErrorInfo?) {
-                            pd.dismiss()
-                            Toast.makeText(applicationContext, "Upload rescheduled: ${error?.description}", Toast.LENGTH_SHORT).show()
-                        }
-                    })
-                    .dispatch()
-            } else {
-                Toast.makeText(this, "Vui lòng chọn ảnh", Toast.LENGTH_SHORT).show()
+            if (name.isEmpty()) {
+                edtName.error = "Vui lòng nhập tên sản phẩm"
+                edtName.requestFocus()
+                return@setOnClickListener
             }
+            if (description.isEmpty()) {
+                edtDescription.error = "Vui lòng nhập mô tả"
+                edtDescription.requestFocus()
+                return@setOnClickListener
+            }
+            if (type.isEmpty()) {
+                edtType.error = "Vui lòng nhập loại sản phẩm"
+                edtType.requestFocus()
+                return@setOnClickListener
+            }
+            if (priceStr.isEmpty()) {
+                edtPrice.error = "Vui lòng nhập giá"
+                edtPrice.requestFocus()
+                return@setOnClickListener
+            }
+            val price = priceStr.toIntOrNull()
+            if (price == null || price <= 0) {
+                edtPrice.error = "Giá phải là số lớn hơn 0"
+                edtPrice.requestFocus()
+                return@setOnClickListener
+            }
+            if (quantityStr.isEmpty()) {
+                edtQuantity.error = "Vui lòng nhập số lượng"
+                edtQuantity.requestFocus()
+                return@setOnClickListener
+            }
+            val quantity = quantityStr.toIntOrNull()
+            if (quantity == null || quantity < 0) {
+                edtQuantity.error = "Số lượng phải là số không âm"
+                edtQuantity.requestFocus()
+                return@setOnClickListener
+            }
+            if (status.isEmpty()) {
+                spinnerStatus.error = "Vui lòng chọn trạng thái"
+                spinnerStatus.requestFocus()
+                return@setOnClickListener
+            }
+            if (imageUri == null) {
+                Toast.makeText(this, "Vui lòng chọn ảnh", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val pd = ProgressDialog(this)
+            pd.setMessage("Uploading...")
+            pd.show()
+
+            MediaManager.get().upload(imageUri)
+                .callback(object : UploadCallback {
+                    override fun onStart(requestId: String?) {}
+                    override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {}
+                    override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
+                        pd.dismiss()
+                        val imageUrl = resultData?.get("url").toString()
+                        saveProductToFirebase(imageUrl)
+                    }
+                    override fun onError(requestId: String?, error: ErrorInfo?) {
+                        pd.dismiss()
+                        Toast.makeText(applicationContext, "Upload failed: "+error?.description, Toast.LENGTH_SHORT).show()
+                    }
+                    override fun onReschedule(requestId: String?, error: ErrorInfo?) {
+                        pd.dismiss()
+                        Toast.makeText(applicationContext, "Upload rescheduled: "+error?.description, Toast.LENGTH_SHORT).show()
+                    }
+                })
+                .dispatch()
         }
     }
 
@@ -120,7 +172,8 @@ class AddProductActivity : AppCompatActivity() {
             "type" to edtType.text.toString(),
             "price" to price,
             "quantity" to quantity,
-            "status" to spinnerStatus.selectedItem.toString()
+            "status" to spinnerStatus.text.toString()
+
         )
 
         db.child(productId).setValue(product)
@@ -133,3 +186,4 @@ class AddProductActivity : AppCompatActivity() {
             }
     }
 }
+

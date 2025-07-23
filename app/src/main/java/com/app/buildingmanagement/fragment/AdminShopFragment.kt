@@ -61,6 +61,13 @@ class AdminShopFragment : Fragment() {
         setupImagePicker()
         loadProducts()
 
+        // Thêm sự kiện click cho nút thêm sản phẩm
+        binding.fabAddProduct.setOnClickListener {
+            // Chuyển sang AddProductActivity
+            val intent = android.content.Intent(requireContext(), AddProductActivity::class.java)
+            startActivity(intent)
+        }
+
         return binding.root
     }
 
