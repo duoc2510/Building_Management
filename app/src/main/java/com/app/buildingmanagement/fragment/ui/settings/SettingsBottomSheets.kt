@@ -501,10 +501,11 @@ private fun AboutBottomSheetContent() {
                     Spacer(modifier = Modifier.height(12.dp))
 
                     listOf(
-                        "Sinh viên 1" to "Nguyễn Bá Uy - 21146362",
-                        "Sinh viên 2" to "Trần Văn Huy - 21146552",
-                        "Sinh viên 3" to "Huỳnh Quang Vũ - 21146366",
-                        "GVHD" to "TS. Nguyễn Văn Thái"
+                        "Sinh viên 1" to "Nguyễn Lương Thành Được - DE170129",
+                        "Sinh viên 2" to "Nguyễn Hoàng Phúc - DE170110",
+                        "Sinh viên 3" to "Nguyễn Thị Diễm - DE170373",
+                        "Sinh viên 3" to "Trương Công Quốc Trung - DE170119",
+                        "GVHD" to "XXX"
                     ).forEach { (label, info) ->
                         Row(
                             modifier = Modifier
@@ -533,7 +534,7 @@ private fun AboutBottomSheetContent() {
 
             // Copyright
             Text(
-                text = "Đại học Sư phạm Kỹ thuật TP.HCM\n© 2025 Building Management",
+                text = "Đại học FPT Đà Nẵng\n© 2025 Building Management",
                 fontSize = 12.sp,
                 color = Color(0xFF999999),
                 textAlign = TextAlign.Center,
