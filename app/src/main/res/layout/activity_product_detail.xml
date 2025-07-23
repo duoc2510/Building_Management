@@ -412,15 +412,16 @@
                             android:textStyle="bold"
                             android:textColor="#1A1A1A" />
 
-                        <TextView
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnShowAllReviews"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Xem tất cả"
                             android:textSize="14sp"
                             android:textColor="#2196F3"
                             android:padding="8dp"
-                            android:background="?android:attr/selectableItemBackground" />
-
+                            android:background="?attr/selectableItemBackground"
+                            />
                     </LinearLayout>
 
                     <!-- Thống kê Rating -->
