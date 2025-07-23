@@ -197,7 +197,7 @@ fun ComposeSettings(
                         title = "Liên hệ hỗ trợ",
                         onClick = {
                             val intent = Intent(Intent.ACTION_DIAL).apply {
-                                data = "tel:0398103352".toUri()
+                                data = "tel:0932565412".toUri()
                             }
                             context.startActivity(intent)
                         }
