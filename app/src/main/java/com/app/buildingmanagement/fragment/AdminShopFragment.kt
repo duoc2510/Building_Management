@@ -248,6 +248,32 @@ class AdminShopFragment : Fragment() {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(resources.getColor(R.color.green_gradient_start, null))
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(resources.getColor(R.color.gray, null))
     }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+        binding.searchEditText.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s.toString().trim()
+                products.clear()
+
+                if (query.isBlank()) {
+                    products.addAll(allProducts)
+                } else {
+                    val filtered = allProducts.filter {
+                        it.name?.contains(query, ignoreCase = true) == true
+                    }
+                    products.addAll(filtered)
+                }
+
+                adapter.notifyDataSetChanged()
+            }
+
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

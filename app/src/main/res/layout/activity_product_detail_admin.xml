@@ -1,0 +1,715 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FAFAFA">
+
+    <!-- App Bar Layout với Collapsing Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleGravity="bottom|start"
+            app:expandedTitleMarginStart="16dp"
+            app:expandedTitleMarginBottom="16dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <!-- ViewPager cho slideshow hình ảnh -->
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/imageViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_collapseMode="parallax" />
+
+            <!-- Overlay gradient -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/gradient_overlay" />
+
+            <!-- Indicators cho ViewPager -->
+            <LinearLayout
+                android:id="@+id/indicatorsContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal" />
+
+            <!-- Toolbar -->
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:navigationIcon="@drawable/arrow"
+                app:title="Chi tiết sản phẩm" />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Nội dung chính -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="80dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Card thông tin cơ bản -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <!-- Tên sản phẩm và trạng thái -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <TextView
+                            android:id="@+id/productName"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Tên sản phẩm"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:textColor="#1A1A1A"
+                            android:layout_marginEnd="12dp" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/statusChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Còn hàng"
+                            app:chipBackgroundColor="#E8F5E8"
+                            app:chipStrokeColor="#4CAF50"
+                            app:chipStrokeWidth="1dp"
+                            android:textColor="#2E7D32" />
+
+                    </LinearLayout>
+
+                    <!-- Giá sản phẩm -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/price_tag"
+                            android:layout_marginEnd="8dp"
+                            app:tint="#FF5722" />
+
+                        <TextView
+                            android:id="@+id/productPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0 VND"
+                            android:textSize="28sp"
+                            android:textStyle="bold"
+                            android:textColor="#FF5722" />
+
+                    </LinearLayout>
+
+                    <!-- Rating và đánh giá -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <RatingBar
+                            android:id="@+id/ratingBar"
+                            style="?android:attr/ratingBarStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:rating="4.5"
+                            android:stepSize="0.5"
+                            android:isIndicator="true"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/ratingText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="4.5 (128 đánh giá)"
+                            android:textSize="14sp"
+                            android:textColor="#757575" />
+
+                    </LinearLayout>
+
+                    <!-- Số lượng còn lại -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/quantity_info_background"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/supply"
+                            android:layout_marginEnd="8dp"
+                            app:tint="#2196F3" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Còn lại: "
+                            android:textSize="16sp"
+                            android:textColor="#2196F3" />
+
+                        <TextView
+                            android:id="@+id/productQuantity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="50"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#2196F3" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" sản phẩm"
+                            android:textSize="16sp"
+                            android:textColor="#2196F3" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card mô tả sản phẩm -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Mô tả sản phẩm"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#1A1A1A"
+                        android:layout_marginBottom="12dp" />
+
+                    <TextView
+                        android:id="@+id/productDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Đây là mô tả chi tiết về sản phẩm. Sản phẩm này có chất lượng tốt và được nhiều người ưa chuộng."
+                        android:textSize="16sp"
+                        android:textColor="#424242"
+                        android:lineSpacingExtra="4dp" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card thông tin chi tiết -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Thông tin chi tiết"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#1A1A1A"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Loại sản phẩm -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/stock"
+                            android:layout_marginEnd="12dp"
+                            app:tint="#9C27B0" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Loại sản phẩm: "
+                            android:textSize="16sp"
+                            android:textColor="#757575" />
+
+                        <TextView
+                            android:id="@+id/productType"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Điện tử"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#9C27B0" />
+
+                    </LinearLayout>
+
+                    <!-- Thương hiệu -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/brand_image"
+                            android:layout_marginEnd="12dp"
+                            app:tint="#FF9800" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Thương hiệu: "
+                            android:textSize="16sp"
+                            android:textColor="#757575" />
+
+                        <TextView
+                            android:id="@+id/productBrand"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Samsung"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#FF9800" />
+
+                    </LinearLayout>
+
+                    <!-- SKU -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/available"
+                            android:layout_marginEnd="12dp"
+                            app:tint="#607D8B" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Mã sản phẩm: "
+                            android:textSize="16sp"
+                            android:textColor="#757575" />
+
+                        <TextView
+                            android:id="@+id/productSku"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="SKU001"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#607D8B" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+            <!-- Card Review sản phẩm -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <!-- Header của Review -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Đánh giá sản phẩm"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#1A1A1A" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnShowAllReviews"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Xem tất cả"
+                            android:textSize="14sp"
+                            android:textColor="#2196F3"
+                            android:padding="8dp"
+                            android:background="?attr/selectableItemBackground"
+                            />
+                    </LinearLayout>
+
+                    <!-- Thống kê Rating -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="20dp"
+
+                        android:padding="16dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:layout_marginEnd="20dp">
+
+                            <TextView
+                                android:id="@+id/tvAverageRating"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="4.5"
+                                android:textSize="36sp"
+                                android:textStyle="bold"
+                                android:textColor="#FF9800" />
+
+                            <RatingBar
+                                style="?android:attr/ratingBarStyleSmall"
+                                android:id="@+id/ratingBarAverage"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:rating="4.5"
+                                android:stepSize="0.5"
+                                android:isIndicator="true"
+                                android:layout_marginBottom="4dp" />
+
+                            <TextView
+                                android:id="@+id/tvTotalRatingCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="128 đánh giá"
+                                android:textSize="12sp"
+                                android:textColor="#757575" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <!-- 5 sao -->
+                            <LinearLayout
+
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="4dp">
+
+                                <TextView
+                                    android:layout_width="20dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="5"
+                                    android:textSize="12sp"
+                                    android:textColor="#757575" />
+
+                                <ImageView
+                                    android:layout_width="12dp"
+                                    android:layout_height="12dp"
+                                    android:src="@drawable/star"
+                                    android:layout_marginEnd="8dp"
+                                    app:tint="#FF9800" />
+
+                                <ProgressBar
+                                    android:id="@+id/progressBar5"
+                                    style="?android:attr/progressBarStyleHorizontal"
+                                    android:layout_width="0dp"
+                                    android:layout_height="8dp"
+                                    android:layout_weight="1"
+                                    android:progress="75"
+                                    android:progressTint="#FF9800"
+                                    android:layout_marginEnd="8dp" />
+
+                                <TextView
+                                    android:id="@+id/tvCount5"
+                                    android:layout_width="30dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="75"
+                                    android:textSize="12sp"
+                                    android:textColor="#757575"
+                                    android:gravity="end" />
+
+                            </LinearLayout>
+
+                            <!-- 4 sao -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="4dp">
+
+                                <TextView
+                                    android:layout_width="20dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="4"
+                                    android:textSize="12sp"
+                                    android:textColor="#757575" />
+
+                                <ImageView
+                                    android:layout_width="12dp"
+                                    android:layout_height="12dp"
+                                    android:src="@drawable/star"
+                                    android:layout_marginEnd="8dp"
+                                    app:tint="#FF9800" />
+
+                                <ProgressBar
+                                    android:id="@+id/progressBar4"
+                                    style="?android:attr/progressBarStyleHorizontal"
+                                    android:layout_width="0dp"
+                                    android:layout_height="8dp"
+                                    android:layout_weight="1"
+                                    android:progress="35"
+                                    android:progressTint="#FF9800"
+                                    android:layout_marginEnd="8dp" />
+
+                                <TextView
+                                    android:id="@+id/tvCount4"
+                                    android:layout_width="30dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="35"
+                                    android:textSize="12sp"
+                                    android:textColor="#757575"
+                                    android:gravity="end" />
+
+                            </LinearLayout>
+
+                            <!-- 3 sao -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="4dp">
+
+                                <TextView
+                                    android:layout_width="20dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="3"
+                                    android:textSize="12sp"
+                                    android:textColor="#757575" />
+
+                                <ImageView
+                                    android:layout_width="12dp"
+                                    android:layout_height="12dp"
+                                    android:src="@drawable/star"
+                                    android:layout_marginEnd="8dp"
+                                    app:tint="#FF9800" />
+
+                                <ProgressBar
+                                    android:id="@+id/progressBar3"
+                                    style="?android:attr/progressBarStyleHorizontal"
+                                    android:layout_width="0dp"
+                                    android:layout_height="8dp"
+                                    android:layout_weight="1"
+                                    android:progress="15"
+                                    android:progressTint="#FF9800"
+                                    android:layout_marginEnd="8dp" />
+
+                                <TextView
+                                    android:id="@+id/tvCount3"
+                                    android:layout_width="30dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="15"
+                                    android:textSize="12sp"
+                                    android:textColor="#757575"
+                                    android:gravity="end" />
+
+                            </LinearLayout>
+
+                            <!-- 2 sao -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="4dp">
+
+                                <TextView
+                                    android:layout_width="20dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="2"
+                                    android:textSize="12sp"
+                                    android:textColor="#757575" />
+
+                                <ImageView
+                                    android:layout_width="12dp"
+                                    android:layout_height="12dp"
+                                    android:src="@drawable/star"
+                                    android:layout_marginEnd="8dp"
+                                    app:tint="#FF9800" />
+
+                                <ProgressBar
+                                    android:id="@+id/progressBar2"
+                                    style="?android:attr/progressBarStyleHorizontal"
+                                    android:layout_width="0dp"
+                                    android:layout_height="8dp"
+                                    android:layout_weight="1"
+                                    android:progress="8"
+                                    android:progressTint="#FF9800"
+                                    android:layout_marginEnd="8dp" />
+
+                                <TextView
+                                    android:id="@+id/tvCount2"
+                                    android:layout_width="30dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="8"
+                                    android:textSize="12sp"
+                                    android:textColor="#757575"
+                                    android:gravity="end" />
+
+                            </LinearLayout>
+
+                            <!-- 1 sao -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                                <TextView
+                                    android:layout_width="20dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="1"
+                                    android:textSize="12sp"
+                                    android:textColor="#757575" />
+
+                                <ImageView
+                                    android:layout_width="12dp"
+                                    android:layout_height="12dp"
+                                    android:src="@drawable/star"
+                                    android:layout_marginEnd="8dp"
+                                    app:tint="#FF9800" />
+
+                                <ProgressBar
+                                    android:id="@+id/progressBar1"
+                                    style="?android:attr/progressBarStyleHorizontal"
+                                    android:layout_width="0dp"
+                                    android:layout_height="8dp"
+                                    android:layout_weight="1"
+                                    android:progress="5"
+                                    android:progressTint="#FF9800"
+                                    android:layout_marginEnd="8dp" />
+
+                                <TextView
+                                    android:id="@+id/tvCount1"
+                                    android:layout_width="30dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="5"
+                                    android:textSize="12sp"
+                                    android:textColor="#757575"
+                                    android:gravity="end" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/reviewRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="16dp" />
+
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -9,9 +9,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.buildingmanagement.ProductDetailActivity
+import com.app.buildingmanagement.ProductDetailActivityAdmin
 import com.app.buildingmanagement.R
 import com.app.buildingmanagement.model.Product
 import com.bumptech.glide.Glide
+import java.text.NumberFormat
+import java.util.Locale
 
 class ProductAdapterAdmin(
     private val products: List<Product>
@@ -43,7 +46,8 @@ class ProductAdapterAdmin(
         holder.name.text = product.name
         holder.description.text = product.description
         holder.type.text = product.type
-        holder.price.text = "${product.price} VND"
+        val formattedPrice = NumberFormat.getNumberInstance(Locale("vi", "VN")).format(product.price)
+        holder.price.text = "$formattedPrice đ"
         holder.quantity.text = "Quantity: ${product.quantity}"
         holder.status.text = product.status
         Log.d("ProductAdapter", "Image URL: ${product.imageUrl}")
@@ -52,12 +56,13 @@ class ProductAdapterAdmin(
             .load(product.imageUrl.replace("http://", "https://"))
             .placeholder(R.drawable.ic_launcher_background)
             .into(holder.image)
-//        holder.itemView.setOnClickListener {
-//            val context = holder.itemView.context
-//            val intent = Intent(context, ProductDetailActivity::class.java)
-//            intent.putExtra("product", product)
-//            context.startActivity(intent)
-//        }
+
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, ProductDetailActivityAdmin::class.java)
+            intent.putExtra("product", product)
+            context.startActivity(intent)
+        }
         holder.btnUpdate.setOnClickListener {
             onUpdateClick?.invoke(product)
         }

@@ -111,7 +111,7 @@
         <activity android:name=".AddProductActivity" android:exported="true" />
         <activity android:name=".ProductDetailActivity" />
         <activity android:name=".CartActivity" />
-
+        <activity android:name=".ProductDetailActivityAdmin" />
 
 
         <meta-data
