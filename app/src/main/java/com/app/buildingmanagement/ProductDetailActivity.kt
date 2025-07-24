@@ -4,6 +4,7 @@ import ImagePagerAdapter
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -13,8 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.app.buildingmanagement.adapter.FullReviewAdapter
 import com.app.buildingmanagement.adapter.ReviewAdapter
+import androidx.appcompat.widget.Toolbar
 import com.app.buildingmanagement.model.Product
 import com.app.buildingmanagement.model.Review
+
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import com.google.firebase.auth.FirebaseAuth
@@ -30,8 +33,16 @@ class ProductDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product_detail)
+        actionBar?.hide()
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.title = "Chi tiết sản phẩm"
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Lấy product từ Intent
+
+
         product = intent.getParcelableExtra<Product>("product") ?: return
 
         // Gán dữ liệu sản phẩm vào view
@@ -318,6 +329,14 @@ class ProductDetailActivity : AppCompatActivity() {
         dialog.show()
     }
 
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()  // Quay lại trang trước
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 }
 
