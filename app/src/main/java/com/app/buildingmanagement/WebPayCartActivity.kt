@@ -32,6 +32,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 import androidx.core.net.toUri
 import com.app.buildingmanagement.model.CartItem
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.MutableData
+import com.google.firebase.database.Transaction
 
 class WebPayCartActivity : ComponentActivity() {
 
@@ -46,7 +50,9 @@ class WebPayCartActivity : ComponentActivity() {
     private var cartItems: ArrayList<CartItem> = arrayListOf()
     private lateinit var selectedMonth: String
 
+    private lateinit var productIds: ArrayList<String>
 
+// Trong onCreate:
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -577,13 +583,28 @@ class WebPayCartActivity : ComponentActivity() {
             return
         }
 
-        val historyRef = FirebaseDatabase.getInstance()
-            .getReference("user")
-            .child(uid)
-            .child("cartHistory")
-            .push()
+        val productInfoList = intent.getSerializableExtra("product_info_list") as? ArrayList<HashMap<String, Any>>
+        if (productInfoList.isNullOrEmpty()) {
+            Toast.makeText(this, "Không có dữ liệu sản phẩm", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
-        val itemList = cartItems.map {
+        Log.d("ProductInfoList", "Dữ liệu sản phẩm từ Intent:")
+        for (info in productInfoList) {
+            Log.d("ProductInfoList", "→ ID: ${info["productId"]}, Qty: ${info["quantity"]}")
+        }
+
+        // ✅ Ánh xạ lại CartItem từ dữ liệu truyền vào (productId + quantity)
+        val filteredCartItems = productInfoList.mapNotNull { info ->
+            val pid = info["productId"] as? String
+            val qty = (info["quantity"] as? Long)?.toInt() ?: return@mapNotNull null
+            val matched = cartItems.find { it.product.id == pid } ?: return@mapNotNull null
+            CartItem(matched.product, qty)
+        }
+
+        // ✅ Tạo dữ liệu lịch sử đơn hàng
+        val itemList = filteredCartItems.map {
             mapOf(
                 "productId" to it.product.id,
                 "name" to it.product.name,
@@ -600,20 +621,72 @@ class WebPayCartActivity : ComponentActivity() {
             "items" to itemList
         )
 
-        historyRef.setValue(historyData).addOnCompleteListener {
-            if (it.isSuccessful) {
+        val historyRef = FirebaseDatabase.getInstance()
+            .getReference("user")
+            .child(uid)
+            .child("cartHistory")
+            .push()
+
+        // ✅ Ghi lịch sử và sau đó cập nhật tồn kho
+        historyRef.setValue(historyData).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // ✅ Cập nhật tồn kho đúng chỗ, chỉ gọi 1 lần
+                updateProductStock(productInfoList)
+
                 CartManager.clearCart(this)
-                Toast.makeText(this, "Thanh toán thành công! Đã lưu lịch sử giỏ hàng.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Thanh toán thành công! Đã lưu lịch sử và cập nhật tồn kho.", Toast.LENGTH_SHORT).show()
                 setResult(Activity.RESULT_OK, Intent().apply {
                     putExtra("payment_success", true)
                 })
                 finish()
-
             } else {
+                Log.e("CartHistory", "❌ Lỗi khi lưu lịch sử giỏ hàng: ${task.exception?.message}")
                 Toast.makeText(this, "Lỗi khi lưu lịch sử giỏ hàng.", Toast.LENGTH_SHORT).show()
+                finish()
             }
+        }
+    }
+    private fun updateProductStock(productInfoList: List<HashMap<String, Any>>) {
+        val productRef = FirebaseDatabase.getInstance().getReference("product")
 
-            finish()
+        for (productInfo in productInfoList) {
+            val productId = productInfo["productId"] as? String ?: continue
+            val quantityToSubtract = when (val q = productInfo["quantity"]) {
+                is Long -> q.toInt()
+                is Int -> q
+                is String -> q.toIntOrNull() ?: 0
+                else -> 0
+            }
+            Log.e("Firebase", "Số lượng $quantityToSubtract")
+            productRef.child(productId).child("quantity")
+                .runTransaction(object : Transaction.Handler {
+                    override fun doTransaction(currentData: MutableData): Transaction.Result {
+                        val currentQuantity = currentData.getValue(Int::class.java)
+                        if (currentQuantity == null) {
+                            Log.e("Firebase", "❌ Không tìm thấy tồn kho cho $productId")
+                            return Transaction.success(currentData)
+                        }
+                        val newQuantity = (currentQuantity - quantityToSubtract).coerceAtLeast(0)
+                        currentData.value = newQuantity
+                        return Transaction.success(currentData)
+                    }
+
+                    override fun onComplete(error: DatabaseError?, committed: Boolean, currentData: DataSnapshot?) {
+                        if (error != null) {
+                            Log.e("Firebase", "❌ Lỗi cập nhật tồn kho cho $productId: ${error.message}")
+                        } else {
+                            val newQuantity = currentData?.getValue(Int::class.java) ?: 0
+                            Log.d("Firebase", "✅ Tồn kho mới của $productId là: $newQuantity")
+
+                            if (newQuantity == 0) {
+                                productRef.child(productId).child("status").setValue("Hết hàng")
+                                    .addOnFailureListener { e ->
+                                        Log.e("Firebase", "❌ Lỗi cập nhật trạng thái 'Hết hàng' cho $productId: ${e.message}")
+                                    }
+                            }
+                        }
+                    }
+                })
         }
     }
 

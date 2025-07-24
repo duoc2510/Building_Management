@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -36,6 +37,7 @@ import java.util.*
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
@@ -54,6 +56,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import org.json.JSONArray
 
 class CartActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -377,6 +380,14 @@ fun ModernCartItemView(
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
+                    Text(
+                        text = cartItem.product.id,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        color = Color(0xFF212529),
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
 
                     Spacer(modifier = Modifier.height(4.dp))
 
@@ -595,6 +606,7 @@ fun ModernBottomBar(
                             context = context,
                             totalCost = totalAmount,
                             selectedMonth = selectedMonth,
+                            cartItems = cartItems, // ✅ Truyền vào đây
                             paymentLauncher = paymentLauncher
                         )
                     },
@@ -633,22 +645,38 @@ fun openPaymentLink(
     context: Context,
     totalCost: Int,
     selectedMonth: String,
-    paymentLauncher: androidx.activity.result.ActivityResultLauncher<Intent>
+    cartItems: List<CartItem>,
+    paymentLauncher: ActivityResultLauncher<Intent>
 ) {
     val phone = FirebaseAuth.getInstance().currentUser?.phoneNumber
-    if (phone.isNullOrEmpty()) {
-        Toast.makeText(context, "Không tìm thấy số điện thoại người dùng", Toast.LENGTH_SHORT).show()
-        return
-    }
-    if (totalCost <= 0) {
-        Toast.makeText(context, "Số tiền thanh toán không hợp lệ", Toast.LENGTH_SHORT).show()
+    if (phone.isNullOrEmpty() || totalCost <= 0) {
+        Toast.makeText(context, "Dữ liệu thanh toán không hợp lệ", Toast.LENGTH_SHORT).show()
         return
     }
 
     val orderCode = (System.currentTimeMillis() / 1000).toInt()
-    val description = "Thanh toán tháng đơn hàng"
+    val description = "Thanh toán đơn hàng"
     val dataToSign =
         "amount=$totalCost&cancelUrl=myapp://payment-cancel&description=$description&orderCode=$orderCode&returnUrl=myapp://payment-success"
+
+    val productArray = JSONArray()
+    val productInfoList = ArrayList<HashMap<String, Any>>() // ⬅️ Dùng HashMap để truyền id + quantity
+
+    for (item in cartItems) {
+        val productJson = JSONObject().apply {
+            put("name", item.product.name)
+            put("quantity", item.quantity)
+            put("price", item.product.price)
+        }
+        productArray.put(productJson)
+
+        val infoMap = hashMapOf<String, Any>(
+            "productId" to item.product.id,
+            "quantity" to item.quantity
+        )
+        productInfoList.add(infoMap)
+    }
+
 
     val json = JSONObject().apply {
         put("orderCode", orderCode)
@@ -657,6 +685,7 @@ fun openPaymentLink(
         put("cancelUrl", "myapp://payment-cancel")
         put("returnUrl", "myapp://payment-success")
         put("signature", hmacSha256(dataToSign))
+        put("items", productArray)
     }
 
     val requestBody = json.toString().toRequestBody("application/json; charset=utf-8".toMediaType())
@@ -685,7 +714,10 @@ fun openPaymentLink(
                         if (jsonResponse.optString("code") != "00") {
                             Toast.makeText(context, "Lỗi PayOS: ${jsonResponse.optString("desc")}", Toast.LENGTH_SHORT).show()
                         } else {
-                            val checkoutUrl = jsonResponse.optJSONObject("data")?.optString("checkoutUrl")
+                            val checkoutUrl = jsonResponse
+                                .optJSONObject("data")
+                                ?.optString("checkoutUrl")
+
                             if (checkoutUrl.isNullOrEmpty()) {
                                 Toast.makeText(context, "Không thể lấy link thanh toán", Toast.LENGTH_SHORT).show()
                             } else {
@@ -694,18 +726,23 @@ fun openPaymentLink(
                                     putExtra("month", selectedMonth)
                                     putExtra("amount", totalCost)
                                     putExtra("phone", phone)
+                                    putExtra("items", productArray.toString()) // ✅ truyền chuỗi JSON danh sách item
+                                    putExtra("product_info_list", productInfoList)
                                 }
                                 paymentLauncher.launch(intent)
                             }
                         }
                     } catch (e: Exception) {
-                        Toast.makeText(context, "Lỗi xử lý response: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Lỗi xử lý phản hồi: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
     })
 }
+
+
+
 
 private fun hmacSha256(data: String): String {
     return try {
