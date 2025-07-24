@@ -1,6 +1,7 @@
 package com.app.buildingmanagement
 
 import ImagePagerAdapter
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.app.buildingmanagement.adapter.FullReviewAdapter
 import com.app.buildingmanagement.adapter.ReviewAdapter
+import com.app.buildingmanagement.databinding.ActivityProductDetailBinding
 import com.app.buildingmanagement.model.Product
 import com.app.buildingmanagement.model.Review
 import com.google.android.material.button.MaterialButton
@@ -21,7 +23,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.text.NumberFormat
 import java.util.*
-
+import androidx.appcompat.widget.Toolbar
 class ProductDetailActivityAdmin : AppCompatActivity() {
 
     private lateinit var btnAddToCart: MaterialButton
@@ -30,6 +32,11 @@ class ProductDetailActivityAdmin : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product_detail_admin)
+        actionBar?.hide()
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Lấy product từ Intent
         product = intent.getParcelableExtra<Product>("product") ?: return
